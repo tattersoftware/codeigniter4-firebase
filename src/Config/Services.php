@@ -8,8 +8,8 @@ class Services extends BaseService
 	/**
 	 * Returns an authenticated Factory for the Firebase SDK
 	 *
-	 * @param \Config\App $config
-	 * @param boolean     $getShared
+	 * @param mixed    $serviceAccount  Anything accepted by ServiceAccount::fromValue()
+	 * @param boolean  $getShared
 	 *
 	 * @return \CodeIgniter\HTTP\CLIRequest
 	 */
