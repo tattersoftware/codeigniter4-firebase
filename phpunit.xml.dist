@@ -38,6 +38,7 @@
 	<php>
 		<env name="app.baseURL" value="http://example.com"/>
 		<env name="CI_ENVIRONMENT" value="testing"/>
+		<env name="FIREBASE_CREDENTIALS" value="keyfile.json"/>
 <!--	<env name="database.tests.hostname" value="localhost"/>  -->
 <!--	<env name="database.tests.database" value="tests"/>	     -->
 <!--	<env name="database.tests.username" value="tests_user"/> -->

@@ -4,3 +4,4 @@ phpunit*.xml
 phpunit
 composer.lock
 .DS_Store
+keyfile.json

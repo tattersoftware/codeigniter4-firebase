@@ -1,25 +1,36 @@
-<?php namespace Tatter\Firebase\Config;
+<?php namespace Tatter\Firestore\Config;
 
-use Tatter\Firebase\Firebase;
+use Kreait\Firebase\Factory;
 use CodeIgniter\Config\BaseService;
+use Google\Cloud\Firestore\FirestoreClient;
 
 class Services extends BaseService
 {
 	/**
-	 * Returns the class wrapper for a Factory for the Firebase SDK
+	 * Returns an authenticated Factory for the Firebase SDK
 	 *
-	 * @param mixed    $serviceAccount  Anything accepted by ServiceAccount::fromValue()
-	 * @param boolean  $getShared
+	 * @param \Config\App $config
+	 * @param boolean     $getShared
 	 *
-	 * @return \Tatter\Firebase\Firebase
+	 * @return \CodeIgniter\HTTP\CLIRequest
 	 */
-	public static function firebase($serviceAccount = null, bool $getShared = true): Firebase
+	public static function firebase($serviceAccount = null, bool $getShared = true)
 	{
 		if ($getShared)
 		{
-			return static::getSharedInstance('firebase', $serviceAccount);
+			return static::getSharedInstance('firestore', $config);
 		}
 
-		return new Firebase($serviceAccount);
+		// Determine autodetect vs. credential path
+		if ($serviceAccount === null)
+		{
+			$factory = new Factory();
+		}
+		else
+		{
+			$factory = (new Factory())->withServiceAccount($serviceAccount);
+		}
+
+		return $factory;
 	}
 }
