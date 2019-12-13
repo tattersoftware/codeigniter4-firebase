@@ -81,6 +81,8 @@ class Firebase
 	 */
 	public function __get(string $name)
 	{
+		$name = lcfirst($name);
+
 		if (isset($this->instances[$name]))
 		{
 			return $this->instances[$name];
@@ -104,6 +106,8 @@ class Firebase
 	 */
 	public function __isset(string $name): bool
 	{
+		$name = lcfirst($name);
+
 		if (isset($this->instances[$name]))
 		{
 			return true;

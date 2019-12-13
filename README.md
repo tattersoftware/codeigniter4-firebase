@@ -58,6 +58,35 @@ For more info on acquiring credentials see the
 For more information on credential specification see the
 [SDK setup docs](https://firebase-php.readthedocs.io/en/stable/setup.html)
 
+## Usage
+
+Load the Firebase service:
+
+	$firebase = service('firebase');
+
+The service will handle creating and caching each component as you need them. Access
+components by their name:
+```
+$storage = $firebase->storage;
+$bucket  = $storage->getBucket('my-bucket');
+```
+
+You can also use the service to access all the functions of `Kreait\Firebase\Factory`
+directly, for example if you wanted a separate component instance:
+```
+$shareClient = $firebase->auth;
+$altClient   = $firebase->createAuth();
+```
+
+See the [SDK docs](https://firebase-php.readthedocs.io/en/stable/index.html) for a list of
+supported components. Available at the time of this writing:
+* Auth
+* Database
+* Firestore
+* Messaging
+* RemoteConfig
+* Storage
+
 ## Firestore
 
 This module provides access to the Firestore database directly via `FirestoreClient`.
