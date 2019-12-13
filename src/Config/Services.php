@@ -1,8 +1,7 @@
-<?php namespace Tatter\Firestore\Config;
+<?php namespace Tatter\Firebase\Config;
 
-use Kreait\Firebase\Factory;
 use CodeIgniter\Config\BaseService;
-use Google\Cloud\Firestore\FirestoreClient;
+use Tatter\Firebase\Firebase;
 
 class Services extends BaseService
 {
@@ -14,23 +13,13 @@ class Services extends BaseService
 	 *
 	 * @return \CodeIgniter\HTTP\CLIRequest
 	 */
-	public static function firebase($serviceAccount = null, bool $getShared = true)
+	public static function firebase($serviceAccount = null, bool $getShared = true): Firebase
 	{
 		if ($getShared)
 		{
-			return static::getSharedInstance('firestore', $config);
+			return static::getSharedInstance('firebase', $serviceAccount);
 		}
 
-		// Determine autodetect vs. credential path
-		if ($serviceAccount === null)
-		{
-			$factory = new Factory();
-		}
-		else
-		{
-			$factory = (new Factory())->withServiceAccount($serviceAccount);
-		}
-
-		return $factory;
+		return new Firebase($serviceAccount);
 	}
 }

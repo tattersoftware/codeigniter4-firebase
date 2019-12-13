@@ -196,7 +196,7 @@ class Model
 		}
 		else
 		{
-			$this->db = Services::firestore();
+			$this->db = Services::firebase()->firestore->database();
 		}
 		
 		$this->tempReturnType     = $this->returnType;
