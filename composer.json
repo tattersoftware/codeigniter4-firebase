@@ -29,7 +29,7 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php" : "^7.1",
-		"kreait/firebase-php": "^4.35",
+		"kreait/firebase-php": "^4.36",
 		"google/cloud-firestore": "^1.10",
 		"google/protobuf": "^v3.3.0",
 		"grpc/grpc": "^v1.1.0"
