@@ -94,6 +94,13 @@ class Firebase
 			return $this->instances[$name];
 		}
 
+		// Look for an internal component
+		$className = 'Tatter\Firebase\Components\\' . ucfirst($name);
+		if (class_exists($className))
+		{
+			return new $className();
+		}
+
 		throw new \Exception("Property {$name} does not exist");
 	}
 
