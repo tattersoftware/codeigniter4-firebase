@@ -133,14 +133,14 @@ class Caller
 		}
 		
 		// Verify the data
-		if (! isset($body->data))
+		if (! isset($body->result))
 		{
-			$this->errors[] = 'Data missing from response: ' . $response->getBody();
+			$this->errors[] = 'Result missing from response: ' . $response->getBody();
 			return null;
 		}
 		
 		// Otherwise it was a success! Return the data
-		return $body->data;
+		return $body->result;
 	}
 
 	/**
