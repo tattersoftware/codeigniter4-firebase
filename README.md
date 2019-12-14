@@ -86,6 +86,32 @@ supported components. Available at the time of this writing:
 * Messaging
 * RemoteConfig
 * Storage
+* Caller
+
+## Caller
+
+While not yet officially supported by the Firebase SDK, this module includes a component
+for Firebase callable functions. A simple example shows all its features:
+```
+// Get the component
+$caller = service('firebase')->caller;
+
+// Set the UID of the user making the call
+$caller->setUid($user->uid);
+
+// Make the call
+$data = ['customerId' => 7, 'charge' => 3.50];
+$response = $caller->call('https://us-central1-myproject.cloudfunctions.net/addCharge', $data);
+
+if ($response === null)
+{
+	echo implode(' ', $caller->getErrors());
+}
+else
+{
+	print_r($response);
+}
+```
 
 ## Firestore
 
