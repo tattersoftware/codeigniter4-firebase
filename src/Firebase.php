@@ -43,10 +43,7 @@ class Firebase
 	/**
 	 * Checks for and creates an authenticated Factory
 	 *
-	 * @param \Config\App $config
-	 * @param boolean     $getShared
-	 *
-	 * @return \CodeIgniter\HTTP\CLIRequest
+	 * @return \Kreait\Firebase\Factory
 	 */
 	protected function factory(): Factory
 	{

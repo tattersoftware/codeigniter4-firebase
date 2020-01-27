@@ -5,6 +5,7 @@ use CodeIgniter\Database\Exceptions\DataException;
 use CodeIgniter\Exceptions\ModelException;
 use Google\Cloud\Firestore\FieldValue;
 use Google\Cloud\Firestore\FirestoreClient;
+use Google\Cloud\Firestore\Query;
 
 /**
  * Class Model
@@ -183,6 +184,13 @@ class Model
 	//--------------------------------------------------------------------
 
 	/**
+	 * Error messages from the last call
+	 *
+	 * @var array
+	 */
+	protected $errors = [];
+
+	/**
 	 * Model constructor.
 	 *
 	 * @param FirestoreClient     $db
@@ -230,7 +238,7 @@ class Model
 
 		$value = $value ?? $val;
 
-		$this->builder()->where($key, $op, $value);
+		$this->builder = $this->builder()->where($key, $op, $value);
 
 		return $this;
 	}
@@ -247,7 +255,7 @@ class Model
 	 */
 	public function whereIn($key, $values)
 	{
-		$this->builder()->where($key, 'array-contains', $values);
+		$this->builder = $this->builder()->where($key, 'array-contains', $values);
 
 		return $this;
 	}
@@ -410,6 +418,7 @@ class Model
 
 		return $result;	
 	}
+
 	//--------------------------------------------------------------------
 
 	/**
@@ -419,7 +428,6 @@ class Model
 	 * @param boolean      $returnID Whether insert ID should be returned or not.
 	 *
 	 * @return integer|string|boolean
-	 * @throws \ReflectionException
 	 */
 	public function insert($data = null, bool $returnID = true)
 	{
@@ -481,6 +489,70 @@ class Model
 		return $returnID ? $this->insertID : true;
 	}
 
+	/**
+	 * Updates a document in the current collection.
+	 *
+	 * @param string $id
+	 * @param array|object $data
+	 *
+	 * @return bool
+	 */
+	public function update(string $id, $data): bool
+	{
+		if (empty($data))
+		{
+			throw DataException::forEmptyDataset('insert');
+		}
+
+		// Convert to an array
+		if (is_object($data))
+		{
+			$data = (array) $data;
+		}
+
+		// Must be called first so we don't strip out updated_at values
+		$data = $this->doProtectFields($data);
+
+		// Update timestamp
+		if ($this->useTimestamps && ! empty($this->updatedField) && ! array_key_exists($this->updatedField, $data))
+		{
+			$data[$this->updatedField] = FieldValue::serverTimestamp();
+		}
+
+		// Build the paths
+		$paths = [];
+		foreach ($data as $key => $value)
+		{
+			$paths[] = ['path' => $key, 'value' => $value];
+		}
+		
+		// Prep the document
+		$document = $this->builder()->document($id);
+
+		return (bool) $document->update($paths);
+	}
+
+	/**
+	 * Deletes a document in the current collection.
+	 * Does not remove subcollections!
+	 *
+	 * @param string $id
+	 *
+	 * @return bool
+	 */
+	public function delete(string $id): bool
+	{
+		if (empty($id))
+		{
+			throw DataException::forEmptyDataset('id');
+		}
+
+		// Prep the document
+		$document = $this->builder()->document($id);
+
+		return (bool) $document->delete();
+	}
+
 	//--------------------------------------------------------------------
 	// Utility
 	//--------------------------------------------------------------------
@@ -495,7 +567,7 @@ class Model
 	 */
 	protected function builder(string $table = null)
 	{
-		if ($this->builder instanceof CollectionReference)
+		if ($this->builder instanceof CollectionReference || $this->builder instanceof Query)
 		{
 			return $this->builder;
 		}
@@ -594,5 +666,18 @@ class Model
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Get and clear any error messsages
+	 *
+	 * @return array  Any error messages from the last operation
+	 */
+	public function errors(): array
+	{
+		$errors       = $this->errors;
+		$this->errors = [];
+
+		return $errors;
 	}
 }
