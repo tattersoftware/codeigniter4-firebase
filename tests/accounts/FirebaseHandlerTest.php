@@ -5,7 +5,7 @@ use Tatter\Firebase\Accounts\FirebaseHandler;
 
 class FirebaseHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
 {
-	use \Tatter\Firebase\Test\FirebaseTestTrait;
+	use \Tatter\Accounts\Test\AccountsTestTrait;
 
 	public function setUp(): void
 	{
@@ -48,7 +48,7 @@ class FirebaseHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
 
 	public function testGetReturnsCorrectValues()
 	{
-		$account = $this->createFirebaseAccount();
+		$account = $this->createAccount('firebase', ['phone' => null]); // Faker phone numbers aren't currently acceptable
 
 		$result = $this->handler->get($account->uid());
 
@@ -57,7 +57,7 @@ class FirebaseHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
 
 	public function testUpdateChangesValues()
 	{
-		$original = $this->createFirebaseAccount();
+		$original = $this->createAccount('firebase', ['phone' => null]);
 		
 		$email = self::$faker->email;
 
@@ -71,7 +71,7 @@ class FirebaseHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
 
 	public function testRemoveDeletes()
 	{
-		$account = $this->createFirebaseAccount();
+		$account = $this->createAccount('firebase', ['phone' => null]);
 
 		$result = $this->handler->remove($account->uid());
 		$this->assertTrue($result);
@@ -83,6 +83,6 @@ class FirebaseHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
 		$this->assertNull($result);
 
 		// Since the account is gone, remove it from the cache
-		$this->removeCache = [];
+		$this->accountsCache = [];
 	}
 }
