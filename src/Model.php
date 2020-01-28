@@ -668,6 +668,35 @@ class Model
 		return $data;
 	}
 
+	//--------------------------------------------------------------------
+
+	/**
+	 * Takes a class an returns an array of it's public and protected
+	 * properties as an array suitable for use in creates and updates.
+	 *
+	 * @param string|object $data
+	 * @param string|null   $primaryKey
+	 * @param string        $dateFormat
+	 * @param boolean       $onlyChanged
+	 *
+	 * @return array
+	 * @throws \ReflectionException
+	 */
+	public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
+	{
+		if (method_exists($data, 'toRawArray'))
+		{
+			$properties = $data->toRawArray();
+		}
+		else
+		{
+			$properties = (array) $data;
+		}
+
+		return $properties;
+	}
+
+
 	/**
 	 * Get and clear any error messsages
 	 *
