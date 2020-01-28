@@ -53,13 +53,16 @@ class Firebase
 			return $this->factory;
 		}
 		
-		// Create a new instance
-		$this->factory = new Factory();
 
-		// If credentials were specified then add them
-		if (! empty($this->serviceAccount))
+		// If credentials were specified then use them
+		if ($this->serviceAccount)
 		{
-			$this->factory->withServiceAccount($this->serviceAccount);
+			$this->factory = (new Factory)->withServiceAccount($this->serviceAccount);
+		}
+		// Create a new instance
+		else
+		{
+			$this->factory = new Factory();
 		}
 
 		return $this->factory;

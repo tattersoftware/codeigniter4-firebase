@@ -12,7 +12,7 @@ class FirebaseHandler extends BaseHandler
 	 *
 	 * @var string
 	 */
-	protected $primaryKey = 'id';
+	protected $primaryKey = 'uid';
 
 	/**
 	 * Internal fields supported by this handler.
@@ -60,7 +60,7 @@ class FirebaseHandler extends BaseHandler
 	protected function wrap($record): Account
 	{
 		// Create the account entity
-		$account = new Account(self::class, $record->uid);
+		$account = new Account(self::class, $record->{$this->primaryKey});
 
 		// Map each field
 		foreach ($this->fields as $from => $to)

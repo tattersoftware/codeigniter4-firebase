@@ -11,19 +11,32 @@ class ServiceTest extends \CodeIgniter\Test\CIUnitTestCase
 	{
 		$keyfile = '/foo/bar/keyfile.json';
 
-		$this->expectException(\RuntimeException::class);
-		$this->expectExceptionMessage('Keyfile missing from');
+		$this->expectException(\Kreait\Firebase\Exception\InvalidArgumentException::class);
+		$this->expectExceptionMessage('Invalid service account specification');
 
-        $firebase = \Config\Services::firebase($keyfile);
+		$firebase = \Config\Services::firebase($keyfile, false);
+		$firebase->firestore->database();
 	}
 
 	public function testInvalidKeyfile()
 	{
 		$keyfile = MODULESUPPORTPATH . 'keyfiles/invalid.json';
 
-		$this->expectException(\Google\Cloud\Core\Exception\GoogleException::class);
-		$this->expectExceptionMessage('Given keyfile at path');
+		$this->expectException(\Kreait\Firebase\Exception\InvalidArgumentException::class);
+		$this->expectExceptionMessage('Invalid service account specification');
 
-        $firebase = \Config\Services::firebase($keyfile);
+		$firebase = \Config\Services::firebase($keyfile, false);
+		$firebase->firestore->database();
+	}
+
+	public function testUnauthorizedKeyfile()
+	{
+		$keyfile = MODULESUPPORTPATH . 'keyfiles/example.json';
+
+		$this->expectException(\Kreait\Firebase\Exception\Auth\AuthError::class);
+		$this->expectExceptionMessage('supplied key param');
+
+		$firebase = \Config\Services::firebase($keyfile, false);
+		$firebase->auth->getUser('nonexistantuser');
 	}
 }
