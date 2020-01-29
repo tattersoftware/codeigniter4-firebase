@@ -3,6 +3,7 @@
 use Config\Services;
 use CodeIgniter\Database\Exceptions\DataException;
 use CodeIgniter\Exceptions\ModelException;
+use Google\Cloud\Firestore\CollectionReference;
 use Google\Cloud\Firestore\FieldValue;
 use Google\Cloud\Firestore\FirestoreClient;
 use Google\Cloud\Firestore\Query;
@@ -275,7 +276,7 @@ class Model
 	{
 		// Retrieve the documents from the collection
 		$snapshot = $this->builder()->documents();
-		
+
 		// If nothing matched then we're done
 		if ($snapshot->isEmpty())
 		{
@@ -558,11 +559,11 @@ class Model
 	//--------------------------------------------------------------------
 
 	/**
-	 * Provides a shared instance of the collection reference.
+	 * Provides a shared instance of the collection reference or a query in process.
 	 *
 	 * @param string $table
 	 *
-	 * @return CollectionReference
+	 * @return CollectionReference|Query
 	 * @throws \CodeIgniter\Exceptions\ModelException;
 	 */
 	protected function builder(string $table = null)
