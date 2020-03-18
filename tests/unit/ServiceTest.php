@@ -20,7 +20,7 @@ class ServiceTest extends \CodeIgniter\Test\CIUnitTestCase
 
 	public function testInvalidKeyfile()
 	{
-		$keyfile = MODULESUPPORTPATH . 'keyfiles/invalid.json';
+		$keyfile = SUPPORTPATH . 'keyfiles/invalid.json';
 
 		$this->expectException(\Kreait\Firebase\Exception\InvalidArgumentException::class);
 		$this->expectExceptionMessage('Invalid service account specification');
@@ -31,7 +31,7 @@ class ServiceTest extends \CodeIgniter\Test\CIUnitTestCase
 
 	public function testUnauthorizedKeyfile()
 	{
-		$keyfile = MODULESUPPORTPATH . 'keyfiles/example.json';
+		$keyfile = SUPPORTPATH . 'keyfiles/example.json';
 
 		$this->expectException(\Kreait\Firebase\Exception\Auth\AuthError::class);
 		$this->expectExceptionMessage('supplied key param');
