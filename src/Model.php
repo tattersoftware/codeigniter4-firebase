@@ -293,6 +293,39 @@ class Model
 	//--------------------------------------------------------------------
 
 	/**
+	 * ORDER BY
+	 *
+	 * @param string  $orderBy
+	 * @param string  $direction ASC, DESC or RANDOM
+	 * @param boolean $escape
+	 *
+	 * @return $this
+	 */
+	public function orderBy(string $orderBy, string $direction = 'ASC', bool $escape = null)
+	{
+		$this->builder = $this->builder()->orderBy($orderBy, $direction);
+
+		return $this;
+	}
+
+	/**
+	 * LIMIT
+	 *
+	 * @param integer $value  LIMIT value
+	 * @param integer $offset OFFSET value
+	 *
+	 * @return $this
+	 */
+	public function limit(int $value = null, ?int $offset = 0)
+	{
+		$this->builder = $this->builder()->limit($value);
+
+		return $this;
+	}
+
+	//--------------------------------------------------------------------
+
+	/**
 	 * Format the results of the query. Returns an array of
 	 * individual data rows, which can be either an 'array', an
 	 * 'object', or a custom class name.
@@ -440,7 +473,7 @@ class Model
 		// Convert to an array
 		if (is_object($data))
 		{
-			$data = (array) $data;
+			$data = self::classToArray($data);
 		}
 
 		// Check if an ID was provided
@@ -508,7 +541,7 @@ class Model
 		// Convert to an array
 		if (is_object($data))
 		{
-			$data = (array) $data;
+			$data = self::classToArray($data);
 		}
 
 		// Must be called first so we don't strip out updated_at values
@@ -672,7 +705,7 @@ class Model
 	//--------------------------------------------------------------------
 
 	/**
-	 * Takes a class an returns an array of it's public and protected
+	 * Takes a class and returns an array of it's public and protected
 	 * properties as an array suitable for use in creates and updates.
 	 *
 	 * @param string|object $data
@@ -681,7 +714,6 @@ class Model
 	 * @param boolean       $onlyChanged
 	 *
 	 * @return array
-	 * @throws \ReflectionException
 	 */
 	public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
 	{
