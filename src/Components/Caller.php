@@ -166,30 +166,15 @@ class Caller
 		// Get the auth component
 		$auth = service('firebase')->auth;
 		
-		// Create a custom token
-		if (! $custom = $auth->createCustomToken($this->uid))
+		// Get a user token
+		if (! $response = $auth->signInAsUser($this->uid))
 		{
 			$this->errors[] = 'Unable to generate custom token for user ' . $this->uid;
 			return null;
 		}
 
-		// Exchange the custom token for an ID token
-		if (! $response = $auth->getApiClient()->exchangeCustomTokenForIdAndRefreshToken($custom))
-		{
-			$this->errors[] = 'Failed to exchange token for user ' . $this->uid;
-			return null;
-		}
-		
-		// Read the token
-		$body = (string) $response->getBody();
-		if (! $data = json_decode($body))
-		{
-			$this->errors[] = 'Unable to decode token response: ' . $body;
-			return null;
-		}
-
 		// Store the actual ID token
-		$this->token = $data->idToken;
+		$this->token = $response->idToken();
 		return $this->token;
 	}
 }
