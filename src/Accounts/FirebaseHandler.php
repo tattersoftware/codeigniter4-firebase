@@ -5,6 +5,9 @@ use Kreait\Firebase\Auth\UserRecord;
 use Tatter\Accounts\Entities\Account;
 use Tatter\Accounts\Handlers\BaseHandler;
 
+/**
+ * @deprecated 1.0.4
+ */
 class FirebaseHandler extends BaseHandler
 {
 	/**

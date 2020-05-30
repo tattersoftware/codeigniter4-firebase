@@ -154,3 +154,8 @@ sure you understand its possibilities and limitations.
 This module also comes with a super-`Entity` that has convenience mapping for common
 `Firestore` properties. This entity is used be default with `Tatter\Firebase\Model` but
 you can also use it directly or reference its methods to enhance your own classes.
+
+## Deprecations
+
+Please note that the Firebase handler for `Tatter\Accounts` is deprecated as of `v1.0.4`
+and will be removed in a future release.
