@@ -742,4 +742,56 @@ class Model
 
 		return $errors;
 	}
+
+	//--------------------------------------------------------------------
+
+	/**
+	 * Provide access to underlying properties consistent with CodeIgniter\Model.
+	 *
+	 * @param string $name
+	 *
+	 * @return mixed
+	 */
+	public function __get(string $name)
+	{
+		if (property_exists($this, $name))
+		{
+			return $this->{$name};
+		}
+		elseif (isset($this->db->$name))
+		{
+			return $this->db->$name;
+		}
+		elseif (isset($this->builder()->$name))
+		{
+			return $this->builder()->$name;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Provide access to underlying properties consistent with CodeIgniter\Model.
+	 *
+	 * @param string $name
+	 *
+	 * @return boolean
+	 */
+	public function __isset(string $name): bool
+	{
+		if (property_exists($this, $name))
+		{
+			return true;
+		}
+		elseif (isset($this->db->$name))
+		{
+			return true;
+		}
+		elseif (isset($this->builder()->$name))
+		{
+			return true;
+		}
+
+		return false;
+	}
 }

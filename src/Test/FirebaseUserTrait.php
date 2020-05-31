@@ -28,7 +28,7 @@ trait FirebaseUserTrait
 	 *
 	 * @var array
 	 */
-	protected $firebaseUserCache;
+	protected $firebaseUserCache = [];
 
 	/**
 	 * Ensures the static instances are loaded.
