@@ -1,5 +1,6 @@
 <?php namespace Tatter\Firebase;
 
+use DateTimeZone;
 use Google\Cloud\Core\Timestamp;
 
 class Entity extends \CodeIgniter\Entity
@@ -21,7 +22,7 @@ class Entity extends \CodeIgniter\Entity
 	{
 		if ($value instanceof Timestamp)
 		{
-			$value = $value->formatAsString();
+			$value = $value->get()->setTimezone(new DateTimeZone('UTC'));
 		}
 
 		return parent::mutateDate($value);
