@@ -22,14 +22,8 @@ class Entity extends \CodeIgniter\Entity
 	{
 		if ($value instanceof Timestamp)
 		{
-			// Convert to a DateTime
-			$value = $value->get();
-			
-			// IntlDateFormatter can't handle "Z" timezone so convert it UTC
-			if ($value->getTimezone()->getName() === 'Z')
-			{
-				$value->setTimezone(new DateTimeZone('UTC'));
-			}
+			// Convert to an int timestamp
+			$value = $value->formatForApi()['seconds'];
 		}
 
 		return parent::mutateDate($value);
