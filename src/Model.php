@@ -399,6 +399,11 @@ class Model
 	 */
 	public function find($id = null)
 	{
+		if ($this->tempUseSoftDeletes === true)
+		{
+			$this->where($this->deletedField, null);
+		}
+
 		if (is_array($id))
 		{
 			$result = $this->whereIn($this->primaryKey, $id)->getResult($this->tempReturnType);
@@ -700,6 +705,21 @@ class Model
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Sets $useSoftDeletes value so that we can temporarily override
+	 * the softdeletes settings. Can be used for all find* methods.
+	 *
+	 * @param boolean $val
+	 *
+	 * @return $this
+	 */
+	public function withDeleted($val = true): self
+	{
+		$this->tempUseSoftDeletes = ! $val;
+
+		return $this;
 	}
 
 	//--------------------------------------------------------------------
