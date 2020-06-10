@@ -399,18 +399,24 @@ class Model
 	 */
 	public function find($id = null)
 	{
-		if ($this->tempUseSoftDeletes === true)
-		{
-			$this->where($this->deletedField, null);
-		}
-
 		if (is_array($id))
 		{
+			if ($this->tempUseSoftDeletes === true)
+			{
+				$this->where($this->deletedField, null);
+			}
+
 			$result = $this->whereIn($this->primaryKey, $id)->getResult($this->tempReturnType);
 		}
 		elseif (is_numeric($id) || is_string($id))
 		{
-			$document = $this->builder()->document($id)->snapshot();
+			// Make sure we use the CollectionReference to get the Document directly
+			if (($builder = $this->builder()) instanceof Query)
+			{
+				$builder = $this->db->collection($this->table);
+			}
+
+			$document = $builder->document($id)->snapshot();
 
 			if (! $document->exists())
 			{
