@@ -287,7 +287,7 @@ class Model
 			$this->documents = $snapshot->rows();
 		}
 
-		return $this;
+		return $reset ? $this->reset() : $this;
 	}
 
 	//--------------------------------------------------------------------
@@ -434,8 +434,8 @@ class Model
 			return $this->findAll();
 		}
 
-		$this->tempReturnType     = $this->returnType;
-		$this->tempUseSoftDeletes = $this->useSoftDeletes;
+		// Clear this execution's parameters
+		$this->reset();
 
 		return $result;
 	}
@@ -458,8 +458,8 @@ class Model
 
 		$result = $this->get()->getResult($this->tempReturnType);
 
-		$this->tempReturnType     = $this->returnType;
-		$this->tempUseSoftDeletes = $this->useSoftDeletes;
+		// Clear this execution's parameters
+		$this->reset();
 
 		return $result;	
 	}
@@ -493,6 +493,9 @@ class Model
 		// Must be called first so we don't
 		// strip out created_at values.
 		$data = $this->doProtectFields($data);
+
+		// Make sure we have a fresh reference
+		$this->reset();
 
 		// If an ID was provided use 'set'
 		if ($id)
@@ -574,6 +577,9 @@ class Model
 		// Prep the document
 		$document = $this->builder()->document($id);
 
+		// Clear this execution's parameters
+		$this->reset();
+
 		return (bool) $document->update($paths);
 	}
 
@@ -595,6 +601,9 @@ class Model
 		// Prep the document
 		$document = $this->builder()->document($id);
 
+		// Clear this execution's parameters
+		$this->reset();
+
 		return (bool) $document->delete();
 	}
 
@@ -603,16 +612,32 @@ class Model
 	//--------------------------------------------------------------------
 
 	/**
+	 * Resets model state, e.g. between completed queries.
+	 *
+	 * @return $this
+	 */
+	public function reset(): self
+	{
+		$this->builder(null, true);
+
+		$this->tempReturnType     = $this->returnType;
+		$this->tempUseSoftDeletes = $this->useSoftDeletes;
+
+		return $this;
+	}
+
+	/**
 	 * Provides a shared instance of the collection reference or a query in process.
 	 *
 	 * @param string $table
+	 * @param bool $refresh  Resets the builder back to a clean CollectionReference
 	 *
 	 * @return CollectionReference|Query
 	 * @throws \CodeIgniter\Exceptions\ModelException;
 	 */
-	protected function builder(string $table = null)
+	protected function builder(string $table = null, bool $refresh = false)
 	{
-		if ($this->builder instanceof CollectionReference || $this->builder instanceof Query)
+		if (! $refresh && ($this->builder instanceof CollectionReference || $this->builder instanceof Query))
 		{
 			return $this->builder;
 		}
