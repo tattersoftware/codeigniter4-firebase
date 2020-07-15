@@ -441,7 +441,7 @@ class Model
 	}
 
 	/**
-	 * Works with the current Colleciton Reference instance to return
+	 * Works with the current Collection Reference instance to return
 	 * all results, while optionally limiting them.
 	 *
 	 * @param integer $limit
@@ -655,7 +655,7 @@ class Model
 		// Ensure we have a good client
 		if (! $this->db instanceof FirestoreClient)
 		{
-			$this->db = Services::firestore();
+			$this->db = Services::firebase()->firestore->database();
 		}
 
 		$this->builder = $this->db->collection($table);
@@ -751,6 +751,24 @@ class Model
 		$this->tempUseSoftDeletes = ! $val;
 
 		return $this;
+	}
+
+	//--------------------------------------------------------------------
+
+	/**
+	 * Return the total number of results (safe up to medium-large datasets).
+	 *
+	 * @param boolean $reset
+	 * @param boolean $test
+	 *
+	 * @return int
+	 */
+	public function countAllResults(bool $reset = true, bool $test = false): int
+	{
+		// Retrieve the documents from the collection
+		$snapshot = $this->builder()->documents();
+
+		return $snapshot->isEmpty() ? 0 : $snapshot->size();
 	}
 
 	//--------------------------------------------------------------------
