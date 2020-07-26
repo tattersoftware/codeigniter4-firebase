@@ -14,14 +14,14 @@ class FirebaseUserTraitTest extends \CodeIgniter\Test\CIUnitTestCase
 	 */
 	protected $firebase;
 
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 		
 		$this->firebase = service('firebase')->auth;
 	}
 
-	public function tearDown(): void
+	protected function tearDown(): void
 	{
 		parent::tearDown();
 		

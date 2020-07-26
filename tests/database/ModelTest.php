@@ -1,9 +1,10 @@
 <?php
 
 use CodeIgniter\Test\Fabricator;
+use Tests\Support\FirestoreTestCase;
 use Tests\Support\Models\ProfileModel;
 
-class ModelTest extends \CodeIgniter\Test\CIUnitTestCase
+class ModelTest extends FirestoreTestCase
 {
 	public function setUp(): void
 	{
@@ -27,16 +28,12 @@ class ModelTest extends \CodeIgniter\Test\CIUnitTestCase
 
 		$result = $this->model->insert($profile);
 		$this->assertIsString($result);
-		
-		$this->modelCache[] = [ProfileModel::class, $result];
 	}
 
 	public function testCanFindByUid()
 	{
 		$profile = $this->fabricator->make();
 		$uid     = $this->model->insert($profile);
-
-		$this->modelCache[] = [ProfileModel::class, $uid];
 
 		$result = $this->model->find($uid);
 
@@ -48,8 +45,6 @@ class ModelTest extends \CodeIgniter\Test\CIUnitTestCase
 		$result = $this->fabricator->create();
 
 		$this->assertIsString($result->uid);
-		
-		$this->modelCache[] = [ProfileModel::class, $result->uid];
 	}
 
 /* This test is crashing PHP!

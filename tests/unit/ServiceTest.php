@@ -12,7 +12,7 @@ class ServiceTest extends \CodeIgniter\Test\CIUnitTestCase
 		$keyfile = '/foo/bar/keyfile.json';
 
 		$this->expectException(\Kreait\Firebase\Exception\InvalidArgumentException::class);
-		$this->expectExceptionMessage('Invalid service account specification');
+		$this->expectExceptionMessage('Invalid service account');
 
 		$firebase = \Config\Services::firebase($keyfile, false);
 		$firebase->firestore->database();
@@ -23,7 +23,7 @@ class ServiceTest extends \CodeIgniter\Test\CIUnitTestCase
 		$keyfile = SUPPORTPATH . 'keyfiles/invalid.json';
 
 		$this->expectException(\Kreait\Firebase\Exception\InvalidArgumentException::class);
-		$this->expectExceptionMessage('Invalid service account specification');
+		$this->expectExceptionMessage('Invalid service account');
 
 		$firebase = \Config\Services::firebase($keyfile, false);
 		$firebase->firestore->database();
