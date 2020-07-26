@@ -2,6 +2,7 @@
 
 use DateTimeZone;
 use Google\Cloud\Core\Timestamp;
+use Tatter\Firebase\Model;
 
 class Entity extends \CodeIgniter\Entity
 {
@@ -27,5 +28,40 @@ class Entity extends \CodeIgniter\Entity
 		}
 
 		return parent::mutateDate($value);
+	}
+
+	/**
+	 * Intercept casts to add support for subcollections
+	 *
+	 * @param $value
+	 * @param string $type
+	 *
+	 * @return mixed
+	 * @throws \Exception
+	 */
+
+	protected function castAs($value, string $type)
+	{
+		// Check for a model request
+		if (is_int(strpos($type, 'model'))
+		{
+			list(, $class) = explode(':', $type);
+
+			if ($model = model($class))
+			{
+				if ($model instanceof Model)
+				{
+					return $model->setBuilder($value);
+				}
+			}
+			elseif (strpos($type, '?') === 0)
+			{
+				return $value;
+			}
+			
+			throw new \RuntimeException('Cast target must be a valid Firebase Model, received ' . $class);
+		}
+		
+		return parent::castAs($value, $type);
 	}
 }

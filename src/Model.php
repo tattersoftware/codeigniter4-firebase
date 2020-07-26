@@ -663,6 +663,20 @@ class Model
 		return $this->builder;
 	}
 
+	/**
+	 * Sets a new $builder (usually a subcollection)
+	 *
+	 * @param CollectionReference|Query
+	 *
+	 * @return $this
+	 */
+	public function setBuilder($builder): self
+	{
+		$this->builder = $builder;
+
+		return $this;
+	}
+
 	// --------------------------------------------------------------------
 
 	/**

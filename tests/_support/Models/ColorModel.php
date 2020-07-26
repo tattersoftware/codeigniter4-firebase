@@ -5,14 +5,14 @@ use Faker\Generator;
 
 class ProfileModel extends Model
 {
-	protected $table      = 'profiles';
+	protected $table      = 'profiles.colors';
 	protected $primaryKey = 'uid';
-	protected $returnType = 'Tests\Support\Entities\Profile';
+	protected $returnType = 'object';
 
 	protected $useTimestamps  = true;
 	protected $skipValidation = true;
 
-	protected $allowedFields = ['firstName', 'lastName', 'age', 'weight'];
+	protected $allowedFields = ['name', 'hex'];
 
 	/**
 	 * Faked data for Fabricator.
@@ -24,10 +24,8 @@ class ProfileModel extends Model
 	public function fake(Generator &$faker): object
 	{
 		return (object) [
-			'firstName' => $faker->firstName,
-			'lastName'  => $faker->lastName,
-			'age'       => rand(5, 90),
-			'weight'    => rand(110, 280),
+			'name' => $faker->colorName,
+			'hex'  => $faker->hexcolor,
 		];
 	}
 }
