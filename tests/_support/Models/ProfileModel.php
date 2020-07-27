@@ -1,6 +1,7 @@
 <?php namespace Tests\Support\Models;
 
 use Tatter\Firebase\Model;
+use Tests\Support\Entities\Profile;
 use Faker\Generator;
 
 class ProfileModel extends Model
@@ -23,11 +24,11 @@ class ProfileModel extends Model
 	 */
 	public function fake(Generator &$faker): object
 	{
-		return (object) [
+		return new Profile([
 			'firstName' => $faker->firstName,
 			'lastName'  => $faker->lastName,
 			'age'       => rand(5, 90),
 			'weight'    => rand(110, 280),
-		];
+		]);
 	}
 }

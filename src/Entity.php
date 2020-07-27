@@ -43,7 +43,7 @@ class Entity extends \CodeIgniter\Entity
 	protected function castAs($value, string $type)
 	{
 		// Check for a model request
-		if (is_int(strpos($type, 'model'))
+		if (is_int(strpos($type, 'model')))
 		{
 			list(, $class) = explode(':', $type);
 
