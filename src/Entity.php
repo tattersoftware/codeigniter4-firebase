@@ -2,6 +2,7 @@
 
 use DateTimeZone;
 use Google\Cloud\Core\Timestamp;
+use Google\Cloud\Firestore\DocumentReference;
 use Tatter\Firebase\Model;
 
 class Entity extends \CodeIgniter\Entity
@@ -9,6 +10,23 @@ class Entity extends \CodeIgniter\Entity
 	protected $primaryKey = 'uid';
 
 	protected $dates = ['createdAt', 'updatedAt'];
+
+	/**
+	 * The originating Document from Firestore (needed for subcollections, etc)
+	 *
+	 * @var DocumentReference|null
+	 */
+	protected $document;
+
+	/**
+	 * Array of subcollections supported by this entity. Actual
+	 * references may or may not exist with documents. Keys are the
+	 * name of the collection and the values are the model to use
+	 * when handling them, or null for raw Firestore.
+	 *
+	 * @var array of name => model|null
+	 */
+	protected $collections = [];
 	
 	/**
 	 * Converts the given item into a \CodeIgniter\I18n\Time object.
@@ -31,37 +49,19 @@ class Entity extends \CodeIgniter\Entity
 	}
 
 	/**
-	 * Intercept casts to add support for subcollections
+	 * Set/get this Entity's originating document reference. Avoids collision
+	 * with normal attribute get/set magic methods.
 	 *
-	 * @param $value
-	 * @param string $type
+	 * @param DocumentReference|null $document
 	 *
-	 * @return mixed
-	 * @throws \Exception
+	 * @return DocumentReference
 	 */
-
-	protected function castAs($value, string $type)
+	protected function document(DocumentReference $document): DocumentReference
 	{
-		// Check for a model request
-		if (is_int(strpos($type, 'model')))
+		if (! is_null($document))
 		{
-			list(, $class) = explode(':', $type);
-
-			if ($model = model($class))
-			{
-				if ($model instanceof Model)
-				{
-					return $model->setBuilder($value);
-				}
-			}
-			elseif (strpos($type, '?') === 0)
-			{
-				return $value;
-			}
-			
-			throw new \RuntimeException('Cast target must be a valid Firebase Model, received ' . $class);
+			$this->document = $document;
 		}
-		
-		return parent::castAs($value, $type);
+		return $this->document;
 	}
 }
