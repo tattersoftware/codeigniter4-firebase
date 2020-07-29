@@ -26,7 +26,7 @@ class Entity extends \CodeIgniter\Entity
 	 *
 	 * @var array of name => model|null
 	 */
-	protected $collections = [];
+	protected $collections;
 	
 	/**
 	 * Converts the given item into a \CodeIgniter\I18n\Time object.
@@ -56,12 +56,71 @@ class Entity extends \CodeIgniter\Entity
 	 *
 	 * @return DocumentReference
 	 */
-	protected function document(DocumentReference $document): DocumentReference
+	public function document(DocumentReference $document = null): ?DocumentReference
 	{
 		if (! is_null($document))
 		{
 			$this->document = $document;
 		}
+
 		return $this->document;
+	}
+
+	/**
+	 * Get any subcollections from this entity's document.
+	 *
+	 * @return array
+	 */
+	public function collections(): array
+	{
+		if (is_null($this->collections) && $document = $this->document())
+		{
+			$this->collections = [];
+
+			foreach ($document->collections() as $collection)
+			{
+				$this->collections[$collection->id()] = $collection;
+			}
+		}
+
+		return $this->collections ?? [];
+	}
+
+	/**
+	 * Check missing attributes for a matching collection.
+	 *
+	 * @param string $key
+	 *
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public function __get(string $key)
+	{
+		$result = parent::__get($key);
+
+		if ($result !== null)
+		{
+			return $result;
+		}
+
+		// Check for a matching collection
+		if (array_key_exists($key, $this->collections()))
+		{
+			// If there's nothing there yet then get a new CollectionReference
+			if (is_null($this->collections[$key]))
+			{
+				$this->collections[$key] = $this->document()->collection($key);
+			}
+			// If it is a model then load the model and set the builder
+			elseif (is_string($this->collections[$key]))
+			{
+				$collection = $this->document()->collection($key);
+				$this->collections[$key] = model($this->collections[$key])->setBuilder($collection);
+			}
+
+			return $this->collections[$key];
+		}
+
+		return null;
 	}
 }

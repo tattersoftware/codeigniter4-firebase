@@ -7,6 +7,7 @@ use Google\Cloud\Firestore\CollectionReference;
 use Google\Cloud\Firestore\FieldValue;
 use Google\Cloud\Firestore\FirestoreClient;
 use Google\Cloud\Firestore\Query;
+use Tatter\Firebase\Entity;
 
 /**
  * Class Model
@@ -366,9 +367,17 @@ class Model
 				$result[] = (object) $row;
 			}
 			// If it is an Entity then use the native constructor fill
-			elseif (is_a($type, '\CodeIgniter\Entity'))
+			elseif (is_a($type, '\CodeIgniter\Entity', true))
 			{
-				$result[] = new $type($row);
+				$entity = new $type($row);
+
+				// If it is our entity then inject the DocumentRerefence
+				if ($entity instanceof Entity)
+				{
+					$entity->document($document->reference());
+				}
+
+				$result[] = $entity;
 			}
 			// Not sure what this will be but assign each property
 			else

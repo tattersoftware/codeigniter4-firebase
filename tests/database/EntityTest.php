@@ -1,26 +1,18 @@
 <?php
 
 use CodeIgniter\Test\Fabricator;
+use Google\Cloud\Firestore\CollectionReference;
 use Tests\Support\FirestoreTestCase;
 use Tests\Support\Models\ColorModel;
 use Tests\Support\Models\ProfileModel;
 
 class EntityTest extends FirestoreTestCase
 {
-	public function testSubcollectionCastsAsModel()
+	public function testGetsSubcollection()
 	{
-		$db     = service('firebase')->firestore->database();
-		$colors = model(ColorModel::class);
+		$profile = model(ProfileModel::class)->find($this->profileUid);
+		$result  = $profile->colors;
 
-		// Create a document with a subcollection
-		$profile    = fake(ProfileModel::class);
-		$document   = $db->collection('profiles')->document($profile->uid);
-		$collection = $document->collection('colors');
-
-		$collection->add(['name' => 'white', 'hex' => '#ffffff']);
-		$collection->add(['name' => 'black', 'hex' => '#000000']);
-
-		$profile = model(ProfileModel::class)->find($profile->uid);
-		dd($profile);
+		$this->assertInstanceOf(CollectionReference::class, $result);
 	}
 }
