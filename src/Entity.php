@@ -104,7 +104,7 @@ class Entity extends \CodeIgniter\Entity
 		}
 
 		// Check for a matching collection
-		if (array_key_exists($key, $this->collections()))
+		if (array_key_exists($key, $this->collections()) && $this->document())
 		{
 			// If there's nothing there yet then get a new CollectionReference
 			if (is_null($this->collections[$key]))

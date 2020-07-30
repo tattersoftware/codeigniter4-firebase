@@ -5,7 +5,7 @@ use Faker\Generator;
 
 class ColorModel extends Model
 {
-	protected $table      = 'profiles.colors';
+	protected $table      = 'colors';
 	protected $primaryKey = 'uid';
 	protected $returnType = 'object';
 
