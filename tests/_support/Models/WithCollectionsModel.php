@@ -4,11 +4,11 @@ use Tatter\Firebase\Model;
 use Tests\Support\Entities\Profile;
 use Faker\Generator;
 
-class ProfileModel extends Model
+class WithCollectionsModel extends Model
 {
 	protected $table      = 'profiles';
 	protected $primaryKey = 'uid';
-	protected $returnType = 'Tests\Support\Entities\Profile';
+	protected $returnType = 'Tests\Support\Entities\WithCollections';
 
 	protected $useTimestamps  = true;
 	protected $skipValidation = true;

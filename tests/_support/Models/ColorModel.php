@@ -3,9 +3,9 @@
 use Tatter\Firebase\Model;
 use Faker\Generator;
 
-class ProfileModel extends Model
+class ColorModel extends Model
 {
-	protected $table      = 'profiles.colors';
+	protected $table      = 'colors';
 	protected $primaryKey = 'uid';
 	protected $returnType = 'object';
 
