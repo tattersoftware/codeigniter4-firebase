@@ -34,4 +34,13 @@ class EntityTest extends FirestoreTestCase
 
 		$this->assertCount(2, $colors);
 	}
+
+	public function testCollectionInsertAddsRow()
+	{
+		$profile = model(WithCollectionsModel::class)->find($this->profileUid);
+		$profile->colors->insert(['name' => 'gray', 'hex' => '#999999']);
+
+		$colors = $profile->colors->findAll();
+		$this->assertCount(3, $colors);
+	}
 }

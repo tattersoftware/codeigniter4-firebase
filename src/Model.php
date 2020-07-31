@@ -675,13 +675,14 @@ class Model
 	/**
 	 * Sets a new $builder (usually a subcollection)
 	 *
-	 * @param CollectionReference|Query
+	 * @param CollectionReference $collection
 	 *
 	 * @return $this
 	 */
-	public function setBuilder($builder): self
+	public function setBuilder(CollectionReference $collection): self
 	{
-		$this->builder = $builder;
+		$this->builder = $collection;
+		$this->table   = $collection->name();
 
 		return $this;
 	}

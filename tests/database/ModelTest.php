@@ -47,12 +47,10 @@ class ModelTest extends FirestoreTestCase
 		$this->assertIsString($result->uid);
 	}
 
-/* This test is crashing PHP!
 	public function testCanCountResults()
 	{
 		$result = $this->model->countAllResults();
 
 		$this->assertIsInt($result);
 	}
-*/
 }
