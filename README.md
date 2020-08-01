@@ -149,11 +149,26 @@ Until a full database driver is available this module supplies a shim Model,
 equivalent methods. Please review [src/Model.php](src/Model.php) before using it to be
 sure you understand its possibilities and limitations.
 
+In order to use a `Model` for a collection group set its `$grouped` property to `true`.
+
 ### Entity
 
 This module also comes with a super-`Entity` that has convenience mapping for common
 `Firestore` properties. This entity is used be default with `Tatter\Firebase\Model` but
 you can also use it directly or reference its methods to enhance your own classes.
+
+If this project's `Model` detects its `Entity` it will load the originating document into
+a protected property in addition to the row data. This allows developers to access the
+DocumentReference with `$entity->document()`. Additionally each `Entity` may define a set
+of known `$collections` corresponding to expected subcollections. They take the format
+`'id' => 'ModelClass|null'`, e.g.:
+
+	protected $collections = ['colors' => 'App\Models\ColorModel'];
+
+If a model class is provided then any particular entity can access its subcollection corresponding
+to the key (document ID) of `$collections`:
+
+	$colors = $entity->colors->findAll();
 
 ## Deprecations
 
