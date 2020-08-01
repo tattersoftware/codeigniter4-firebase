@@ -2,6 +2,7 @@
 
 use CodeIgniter\Test\Fabricator;
 use Tests\Support\FirestoreTestCase;
+use Tests\Support\Models\ColorModel;
 use Tests\Support\Models\ProfileModel;
 
 class ModelTest extends FirestoreTestCase
@@ -52,5 +53,12 @@ class ModelTest extends FirestoreTestCase
 		$result = $this->model->countAllResults();
 
 		$this->assertIsInt($result);
+	}
+
+	public function testGroupedLoadsSubcollectionRows()
+	{
+		$result = model(ColorModel::class, false)->findAll();
+
+		$this->assertCount(3, $result);
 	}
 }

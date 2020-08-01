@@ -27,7 +27,7 @@ trait FirestoreTrait
 	}
 
 	/**
-	 * Completely empty a Firestore database.
+	 * Remove an entire Firestore Collection, with subcollections.
 	 *
 	 * @param CollectionReference|string $collection  Collection to delete
 	 */
@@ -50,6 +50,11 @@ trait FirestoreTrait
 		{
 			foreach ($documents as $document)
 			{
+				foreach ($document->reference()->collections() as $subcollection)
+				{
+					$this->deleteCollection($subcollection);
+				}
+
 				$document->reference()->delete();
 			}
 			$documents = $collection->limit(30)->documents();

@@ -15,6 +15,13 @@ class ColorModel extends Model
 	protected $allowedFields = ['name', 'hex'];
 
 	/**
+	 * Whether this model represents a collection group
+	 *
+	 * @var bool
+	 */
+	protected $grouped = true;
+
+	/**
 	 * Faked data for Fabricator.
 	 *
 	 * @param Generator $faker

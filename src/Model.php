@@ -144,6 +144,13 @@ class Model
 	protected $documents;
 
 	/**
+	 * Whether this model represents a collection group
+	 *
+	 * @var bool
+	 */
+	protected $grouped = false;
+
+	/**
 	 * Rules used to validate data in insert, update, and save methods.
 	 * The array must match the format of data passed to the Validation
 	 * library.
@@ -607,8 +614,16 @@ class Model
 			throw DataException::forEmptyDataset('id');
 		}
 
-		// Prep the document
-		$document = $this->builder()->document($id);
+		if ($this->builder() instanceof CollectionReference)
+		{
+			// Prep the document
+			$document = $this->builder()->document($id);
+		}
+		// Otherwise assume a Query
+		else
+		{
+			$document = $this->where($this->primaryKey, $id)->findAll()[0];
+		}
 
 		// Clear this execution's parameters
 		$this->reset();
@@ -667,7 +682,7 @@ class Model
 			$this->db = Services::firebase()->firestore->database();
 		}
 
-		$this->builder = $this->db->collection($table);
+		$this->builder = $this->grouped ? $this->db->collectionGroup($table) : $this->db->collection($table);
 
 		return $this->builder;
 	}
@@ -682,6 +697,7 @@ class Model
 	public function setBuilder(CollectionReference $collection): self
 	{
 		$this->builder = $collection;
+		$this->grouped = false;
 		$this->table   = $collection->name();
 
 		return $this;
