@@ -103,6 +103,26 @@ trait FirebaseUserTrait
 	}
 
 	/**
+	 * Removes all accounts from Firebase Auth.
+	 */
+	protected function clearFirebaseAuth()
+	{
+		if (ENVIRONMENT !== 'testing')
+		{
+			throw new \RuntimeException('This feature is only available during testing.'); 
+		}
+
+		$this->initAuth();
+
+		foreach (self::$auth->listUsers() as $user)
+		{
+			self::$auth->deleteUser($user->uid);
+		}
+
+		$this->firebaseUserCache = [];
+	}
+
+	/**
 	 * Removes any Firebase Auth users in the cache.
 	 */
 	protected function firebaseUserTearDown()
