@@ -8,13 +8,13 @@ on:
       - 'develop'
       - 'apply-phpstan-level-*'
     paths:
-      - 'app/**'
+      - 'src/**'
       - '.github/workflows/test-phpstan.yml'
   push:
     branches:
       - 'develop'
     paths:
-      - 'app/**'
+      - 'src/**'
 
 jobs:
   build:
