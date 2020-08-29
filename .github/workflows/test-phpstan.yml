@@ -1,0 +1,51 @@
+# When a PR is opened or a push is made, perform
+# a static analysis check on the code using PHPStan.
+name: PHPStan
+
+on:
+  pull_request:
+    branches:
+      - 'develop'
+      - 'apply-phpstan-level-*'
+    paths:
+      - 'app/**'
+      - '.github/workflows/test-phpstan.yml'
+  push:
+    branches:
+      - 'develop'
+    paths:
+      - 'app/**'
+
+jobs:
+  build:
+    name: Analyze code (PHPStan)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: '7.4'
+          tools: composer, pecl, phpunit
+          extensions: intl, json, mbstring, mysqlnd, xdebug, xml, grpc, sqlite3
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-progress --no-suggest --no-interaction --prefer-dist --optimize-autoloader
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+
+      - name: Run static analysis
+        run: vendor/bin/phpstan analyze --level=0 src
