@@ -201,6 +201,11 @@ class Model
 	protected $errors = [];
 
 	/**
+	 * @var string
+	 */
+	protected $insertID;
+
+	/**
 	 * Model constructor.
 	 *
 	 * @param FirestoreClient     $db
