@@ -448,7 +448,7 @@ class Model
 			{
 				$this->documents = [$document];
 				$result = $this->getResult($this->tempReturnType);
-				$result = is_null($result) ? null : $result[0];
+				$result = $result ? $result[0] : null;
 			}
 		}
 		else
@@ -667,7 +667,7 @@ class Model
 	 */
 	protected function builder(string $table = null, bool $refresh = false)
 	{
-		if (! $refresh && ($this->builder instanceof CollectionReference || $this->builder instanceof Query))
+		if (! $refresh && $this->builder instanceof Query)
 		{
 			return $this->builder;
 		}
@@ -727,17 +727,14 @@ class Model
 			// where('name', 'Roland')
 			case 1:
 				return [$parts[0], '=', null];
-			break;
 
 			// where('age >', 999)
 			case 2:
 				return [$parts[0], $parts[1], null];
-			break;
 
 			// where('status != "bogus"')
 			case 3:
 				return [$parts[0], $parts[1], $parts[2]];
-			break;
 
 			default:
 				throw new \RuntimeException('Unable to parse where clause: ' . $str);
