@@ -133,7 +133,7 @@ class Model
 	/**
 	 * Query Builder object
 	 *
-	 * @var CollectionReference
+	 * @var CollectionReference|Query
 	 */
 	protected $builder;
 
@@ -522,13 +522,13 @@ class Model
 		// If an ID was provided use 'set'
 		if ($id)
 		{
-			$document = $this->builder()->document($id);
+			$document = $this->builder()->document($id); // @phpstan-ignore-line
 			$result = (bool) $document->set($data);
 		}
 		// Otherwise add the documentElement
 		else
 		{
-			$document = $this->builder()->add($data);
+			$document = $this->builder()->add($data); // @phpstan-ignore-line
 			$result = (bool) $document;
 		}
 
@@ -597,7 +597,7 @@ class Model
 		}
 
 		// Prep the document
-		$document = $this->builder()->document($id);
+		$document = $this->builder()->document($id); // @phpstan-ignore-line
 
 		// Clear this execution's parameters
 		$this->reset();
@@ -662,7 +662,7 @@ class Model
 	 * @param string $table
 	 * @param bool $refresh  Resets the builder back to a clean CollectionReference
 	 *
-	 * @return CollectionReference
+	 * @return CollectionReference|Query
 	 * @throws \CodeIgniter\Exceptions\ModelException;
 	 */
 	protected function builder(string $table = null, bool $refresh = false)
