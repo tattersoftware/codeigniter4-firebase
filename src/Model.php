@@ -3,6 +3,7 @@
 use Config\Services;
 use CodeIgniter\Database\Exceptions\DataException;
 use CodeIgniter\Exceptions\ModelException;
+use CodeIgniter\Validation\ValidationInterface;
 use Google\Cloud\Firestore\CollectionReference;
 use Google\Cloud\Firestore\FieldValue;
 use Google\Cloud\Firestore\FirestoreClient;
