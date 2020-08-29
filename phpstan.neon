@@ -1,0 +1,10 @@
+parameters:
+    bootstrapFiles:
+        - qa-bootstrap.php
+#    excludes_analyse:
+#    ignoreErrors:
+    scanDirectories:
+      - vendor/codeigniter4/codeigniter4/system/Helpers
+    dynamicConstantNames:
+        - ENVIRONMENT
+        - CI_DEBUG
