@@ -2,7 +2,8 @@ parameters:
     bootstrapFiles:
         - qa-bootstrap.php
 #    excludes_analyse:
-#    ignoreErrors:
+    ignoreErrors:
+      - '#Call to an undefined static method Config\\Services::firebase\(\)#'
     scanDirectories:
       - vendor/codeigniter4/codeigniter4/system/Helpers
     dynamicConstantNames:
