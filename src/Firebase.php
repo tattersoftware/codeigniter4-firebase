@@ -19,7 +19,7 @@ class Firebase
 	/**
 	 * A pre-authenticated instance of the factory
 	 *
-	 * @var Kreait\Firebase\Factory
+	 * @var \Kreait\Firebase\Factory
 	 */
 	protected $factory;
 
@@ -29,7 +29,7 @@ class Firebase
 	 * @var array
 	 */
 	protected $instances = [];
-	
+
 	/**
 	 * Stores the path to the optional service account credentials file.
 	 *
@@ -39,7 +39,7 @@ class Firebase
 	{
 		$this->serviceAccount = $serviceAccount;
 	}
-	
+
 	/**
 	 * Checks for and creates an authenticated Factory
 	 *
@@ -52,7 +52,7 @@ class Firebase
 		{
 			return $this->factory;
 		}
-		
+
 
 		// If credentials were specified then use them
 		if ($this->serviceAccount)
@@ -87,7 +87,7 @@ class Firebase
 		{
 			return $this->instances[$name];
 		}
-		
+
 		if ($method = $this->factoryHas($name))
 		{
 			$this->instances[$name] = $this->factory()->$method();
@@ -139,7 +139,7 @@ class Firebase
 	 */
 	public function __call(string $name, array $params)
 	{
-		$result = $this->factory()->$name(...$params);
+		return $this->factory()->$name(...$params);
 	}
 
 	//--------------------------------------------------------------------

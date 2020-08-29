@@ -27,12 +27,12 @@ class Entity extends \CodeIgniter\Entity
 	 * @var array of name => model|null
 	 */
 	protected $collections;
-	
+
 	/**
 	 * Converts the given item into a \CodeIgniter\I18n\Time object.
 	 * Adds support for Google\Cloud\Core\Timestamp
 	 *
-	 * @param $value
+	 * @param Timestamp|\CodeIgniter\I18n\Time $value
 	 *
 	 * @return \CodeIgniter\I18n\Time
 	 * @throws \Exception

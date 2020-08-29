@@ -126,14 +126,14 @@ class Model
 	/**
 	 * Database Connection
 	 *
-	 * @var ConnectionInterface
+	 * @var FirestoreClient
 	 */
 	protected $db;
 
 	/**
 	 * Query Builder object
 	 *
-	 * @var BaseBuilder
+	 * @var CollectionReference
 	 */
 	protected $builder;
 
@@ -662,7 +662,7 @@ class Model
 	 * @param string $table
 	 * @param bool $refresh  Resets the builder back to a clean CollectionReference
 	 *
-	 * @return CollectionReference|Query
+	 * @return CollectionReference
 	 * @throws \CodeIgniter\Exceptions\ModelException;
 	 */
 	protected function builder(string $table = null, bool $refresh = false)
@@ -826,7 +826,6 @@ class Model
 	 * @param string|object $data
 	 * @param string|null   $primaryKey
 	 * @param string        $dateFormat
-	 * @param boolean       $onlyChanged
 	 *
 	 * @return array
 	 */
