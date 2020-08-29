@@ -19,7 +19,7 @@ class Caller
 	/**
 	 * A Firebase ID token for the user identified by $this->uid.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $token;
 
@@ -57,7 +57,7 @@ class Caller
 		{
 			$this->token = null;
 		}
-		
+
 		$this->uid = $uid;
 
 		return $this;
@@ -79,7 +79,7 @@ class Caller
 
 		// Load the client
 		$client = service('curlrequest');
-		
+
 		// Check if $data is already JSON
 		if (is_string($data) && json_decode($data, true))
 		{
@@ -90,14 +90,14 @@ class Caller
 			$body = json_encode(['data' => $data]);
 		}
 		unset($data);
-		
+
 		// Check for authorization
 		if ($this->uid)
 		{
 			$client->setHeader('Authorization', 'Bearer ' . $this->getToken());
 		}
 		$client->setHeader('Content-Type', 'application/json; charset=utf-8')->setBody($body);
-		
+
 		// Make the call
 		$response = $client->post($url, ['http_errors' => false]);
 
@@ -107,20 +107,20 @@ class Caller
 			$this->errors[] = 'Failed to execute remote request to ' . $url;
 			return null;
 		}
-		
+
 		// Decode the response
 		if (! $body = json_decode($response->getBody()))
 		{
 			$this->errors[] = 'Unable to decode response: ' . $body;
 			return null;
 		}
-		
+
 		// Check for errors
 		if (! empty($body->error))
 		{
 			$this->errors[] = $body->error->message;
 			$this->errors[] = $body->error->status;
-			
+
 			if (! empty($body->error->details))
 			{
 				foreach ($body->error->details as $key => $value)
@@ -131,14 +131,14 @@ class Caller
 
 			return null;
 		}
-		
+
 		// Verify the data
 		if (! isset($body->result))
 		{
 			$this->errors[] = 'Result missing from response: ' . $response->getBody();
 			return null;
 		}
-		
+
 		// Otherwise it was a success! Return the data
 		return $body->result;
 	}
@@ -165,7 +165,7 @@ class Caller
 
 		// Get the auth component
 		$auth = service('firebase')->auth;
-		
+
 		// Get a user token
 		if (! $response = $auth->signInAsUser($this->uid))
 		{
