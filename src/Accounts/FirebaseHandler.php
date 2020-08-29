@@ -40,7 +40,7 @@ class FirebaseHandler extends BaseHandler
 	/**
 	 * Load or store the model
 	 *
-	 * @param Auth $auth  Instance of the Firebase SDK Auth, or null to load from the service
+	 * @param Auth $firebase  Instance of the Firebase SDK Auth, or null to load from the service
 	 */
 	public function __construct(Auth $firebase = null)
 	{
@@ -127,7 +127,7 @@ class FirebaseHandler extends BaseHandler
 	{
 		if (! $record = $this->tryFirebaseMethod([$this->source, 'getUser'], $uid))
 		{
-			return null;			
+			return null;
 		}
 
 		// Wrap the result into an Account

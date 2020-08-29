@@ -126,14 +126,14 @@ class Model
 	/**
 	 * Database Connection
 	 *
-	 * @var ConnectionInterface
+	 * @var FirestoreClient
 	 */
 	protected $db;
 
 	/**
 	 * Query Builder object
 	 *
-	 * @var BaseBuilder
+	 * @var CollectionReference|Query
 	 */
 	protected $builder;
 
@@ -522,13 +522,13 @@ class Model
 		// If an ID was provided use 'set'
 		if ($id)
 		{
-			$document = $this->builder()->document($id);
+			$document = $this->builder()->document($id); // @phpstan-ignore-line
 			$result = (bool) $document->set($data);
 		}
 		// Otherwise add the documentElement
 		else
 		{
-			$document = $this->builder()->add($data);
+			$document = $this->builder()->add($data); // @phpstan-ignore-line
 			$result = (bool) $document;
 		}
 
@@ -597,7 +597,7 @@ class Model
 		}
 
 		// Prep the document
-		$document = $this->builder()->document($id);
+		$document = $this->builder()->document($id); // @phpstan-ignore-line
 
 		// Clear this execution's parameters
 		$this->reset();
@@ -826,7 +826,6 @@ class Model
 	 * @param string|object $data
 	 * @param string|null   $primaryKey
 	 * @param string        $dateFormat
-	 * @param boolean       $onlyChanged
 	 *
 	 * @return array
 	 */
