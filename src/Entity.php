@@ -24,7 +24,7 @@ class Entity extends \CodeIgniter\Entity
 	 * name of the collection and the values are the model to use
 	 * when handling them, or null for raw Firestore.
 	 *
-	 * @var array of name => model|null
+	 * @var array|null of name => model|null
 	 */
 	protected $collections;
 
