@@ -2,10 +2,7 @@ parameters:
     bootstrapFiles:
         - qa-bootstrap.php
 #    excludes_analyse:
-#        - app/Views/*
-#        - system/ThirdParty/*
-    ignoreErrors:
-        - '#Unsafe usage of new static\(\)*#'
+#    ignoreErrors:
     scanDirectories:
       - vendor/codeigniter4/codeigniter4/system/Helpers
     dynamicConstantNames:

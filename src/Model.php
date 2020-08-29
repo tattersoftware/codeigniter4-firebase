@@ -216,7 +216,7 @@ class Model
 		{
 			$this->db = Services::firebase()->firestore->database();
 		}
-		
+
 		$this->tempReturnType     = $this->returnType;
 		$this->tempUseSoftDeletes = $this->useSoftDeletes;
 
@@ -350,7 +350,7 @@ class Model
 		{
 			return [];
 		}
-		
+
 		// Extract the actual data into arrays
 		$result = [];
 		foreach ($this->documents as $document)
@@ -401,7 +401,7 @@ class Model
 
 		return $result;
 	}
-	
+
 	//--------------------------------------------------------------------
 	// CRUD & FINDERS
 	//--------------------------------------------------------------------
@@ -478,7 +478,7 @@ class Model
 		// Clear this execution's parameters
 		$this->reset();
 
-		return $result;	
+		return $result;
 	}
 
 	//--------------------------------------------------------------------
@@ -532,7 +532,7 @@ class Model
 		{
 			return false;
 		}
-		
+
 		// Save the insert ID
 		$this->insertID = $document->id();
 
@@ -590,7 +590,7 @@ class Model
 		{
 			$paths[] = ['path' => $key, 'value' => $value];
 		}
-		
+
 		// Prep the document
 		$document = $this->builder()->document($id);
 
@@ -716,26 +716,26 @@ class Model
 	protected function parseWhere(string $str): array
 	{
 		$parts = explode(' ', $str);
-		
+
 		switch (count($parts))
 		{
 			// where('name', 'Roland')
 			case 1:
 				return [$parts[0], '=', null];
 			break;
-			
+
 			// where('age >', 999)
 			case 2:
 				return [$parts[0], $parts[1], null];
 			break;
-			
+
 			// where('status != "bogus"')
 			case 3:
 				return [$parts[0], $parts[1], $parts[2]];
 			break;
-			
+
 			default:
-				throw \RuntimeException('Unable to parse where clause: ' . $str);
+				throw new \RuntimeException('Unable to parse where clause: ' . $str);
 		}
 	}
 
