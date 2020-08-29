@@ -39,7 +39,7 @@
 		"fzaninotto/faker": "^1.9@dev",
 		"codeigniter4/codeigniter4": "dev-develop",
 		"tatter/accounts": "^1.0",
-		"phpstan/phpstan": "0.12.40"
+		"phpstan/phpstan": "^0.12"
 	},
 	"autoload": {
 		"psr-4": {
