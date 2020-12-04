@@ -1,6 +1,7 @@
 <?php namespace Tatter\Firebase\Test;
 
 use CodeIgniter\Test\Fabricator;
+use Kreait\Firebase\Auth;
 use Kreait\Firebase\Auth\UserRecord;
 use Tatter\Firebase\Model;
 
@@ -12,14 +13,14 @@ trait FirebaseUserTrait
 	/**
 	 * Instance of the Firebase SDK.
 	 *
-	 * @var Kreait\Firebase\Auth
+	 * @var Auth|null
 	 */
 	protected static $auth;
 
 	/**
 	 * Fabricator for generating faux content.
 	 *
-	 * @var CodeIgniter\Test\Fabricator
+	 * @var Fabricator|null
 	 */
 	protected static $fabricator;
 
@@ -33,11 +34,9 @@ trait FirebaseUserTrait
 	/**
 	 * Ensures the static instances are loaded.
 	 *
-	 * @param array $data
-	 *
 	 * @return $this
 	 */
-	protected function initAuth()
+	protected function initAuth(): self
 	{
 		if (! self::$auth)
 		{
@@ -52,6 +51,8 @@ trait FirebaseUserTrait
 				//'phoneNumber' => 'phoneNumber', // Faker phone numbers aren't currently acceptable
 			]);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -59,7 +60,7 @@ trait FirebaseUserTrait
 	 *
 	 * @param array|null $overrides  Overriding data to use with the Fabricator
 	 *
-	 * @return Kreait\Firebase\Auth\UserRecord
+	 * @return UserRecord
 	 */
 	protected function createFirebaseUser(array $overrides = null): UserRecord
 	{

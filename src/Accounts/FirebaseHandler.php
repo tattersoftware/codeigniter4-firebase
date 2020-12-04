@@ -137,7 +137,7 @@ class FirebaseHandler extends BaseHandler
 	/**
 	 * Create a new account and return it
 	 *
-	 * @param array $data  Values to use
+	 * @param Account|array $data  Values to use
 	 *
 	 * @return Account|null
 	 */
