@@ -31,9 +31,9 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: latest
+          php-version: '7.4'
           tools: composer, pecl, phpunit
-          extensions: intl, json, mbstring, mysqlnd, xdebug, xml, sqlite3
+          extensions: intl, json, mbstring, mysqlnd, xdebug, xml, sqlite3, grpc
 
       - name: Get composer cache directory
         id: composer-cache
