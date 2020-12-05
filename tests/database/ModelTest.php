@@ -2,11 +2,22 @@
 
 use CodeIgniter\Test\Fabricator;
 use Tests\Support\FirestoreTestCase;
+use Tests\Support\Entities\Profile;
 use Tests\Support\Models\ColorModel;
 use Tests\Support\Models\ProfileModel;
 
 class ModelTest extends FirestoreTestCase
 {
+	/**
+	 * @var ProfileModel
+	 */
+	private $model;
+
+	/**
+	 * @var Fabricator
+	 */
+	private $fabricator;
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -33,12 +44,13 @@ class ModelTest extends FirestoreTestCase
 
 	public function testCanFindByUid()
 	{
+		/** @var Profile $profile */
 		$profile = $this->fabricator->make();
 		$uid     = $this->model->insert($profile);
 
 		$result = $this->model->find($uid);
 
-		$this->assertEquals($profile->lastName, $result->lastName);
+		$this->assertEquals($profile->lastName, $result->lastName); // @phpstan-ignore-line
 	}
 
 	public function testWorksWithFabricator()

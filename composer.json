@@ -1,5 +1,6 @@
 {
 	"name": "tatter/firebase",
+	"type": "library",
 	"description": "Firebase integration for CodeIgniter 4",
 	"keywords": [
 		"codeigniter",
@@ -20,41 +21,42 @@
 			"role": "Developer"
 		}
 	],
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/codeigniter4/CodeIgniter4"
-		}
-	],
-	"minimum-stability": "stable",
 	"require": {
-		"php" : ">=7.2",
-		"kreait/firebase-php": "^5.0",
+		"php": ">=7.2",
 		"google/cloud-firestore": "^1.10",
 		"google/protobuf": "^3.3.0",
-		"grpc/grpc": "^1.1.0"
+		"grpc/grpc": "^1.1.0",
+		"kreait/firebase-php": "^5.0"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "8.5.*",
-		"fzaninotto/faker": "^1.9@dev",
 		"codeigniter4/codeigniter4": "dev-develop",
 		"tatter/accounts": "^1.0",
-		"phpstan/phpstan": "^0.12"
+		"tatter/tools": "^1.2"
 	},
 	"autoload": {
 		"psr-4": {
 			"Tatter\\Firebase\\": "src"
-		}
+		},
+		"exclude-from-classmap": [
+			"**/Database/Migrations/**"
+		]
 	},
 	"autoload-dev": {
 		"psr-4": {
 			"Tests\\Support\\": "tests/_support"
 		}
 	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/codeigniter4/CodeIgniter4"
+		}
+	],
+	"minimum-stability": "dev",
+	"prefer-stable": true,
 	"scripts": {
-		"test": "phpunit",
-		"post-update-cmd": [
-			"composer dump-autoload"
-		]
+		"analyze": "phpstan analyze",
+		"style": "phpcbf --standard=./vendor/codeigniter4/codeigniter4-standard/CodeIgniter4 tests/ src/",
+		"test": "phpunit"
 	}
 }

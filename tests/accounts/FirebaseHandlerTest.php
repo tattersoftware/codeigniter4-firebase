@@ -1,11 +1,25 @@
 <?php
 
+use CodeIgniter\Test\CIUnitTestCase;
+use Faker\Generator;
 use Tatter\Accounts\Entities\Account;
 use Tatter\Firebase\Accounts\FirebaseHandler;
 
-class FirebaseHandlerTest extends \CodeIgniter\Test\CIUnitTestCase
+class FirebaseHandlerTest extends CIUnitTestCase
 {
 	use \Tatter\Accounts\Test\AccountsTestTrait;
+
+	/**
+	 * Faker instance for generating content.
+	 *
+	 * @var Generator
+	 */
+	protected static $faker;
+
+	/**
+	 * @var FirebaseHandler
+	 */
+	private $handler;
 
 	public function setUp(): void
 	{
