@@ -5,6 +5,7 @@ use CodeIgniter\Database\Exceptions\DataException;
 use CodeIgniter\Exceptions\ModelException;
 use CodeIgniter\Validation\ValidationInterface;
 use Google\Cloud\Firestore\CollectionReference;
+use Google\Cloud\Firestore\DocumentReference;
 use Google\Cloud\Firestore\FieldValue;
 use Google\Cloud\Firestore\FirestoreClient;
 use Google\Cloud\Firestore\Query;
@@ -231,6 +232,20 @@ class Model
 		}
 
 		$this->validation = $validation;
+	}
+
+	/**
+	 * Creates a reference to a document (that may or may not exist)
+	 * in this collection.
+	 * Helpful for creating references to add to other documents.
+	 *
+	 * @param string $uid
+	 *
+	 * @return DocumentReference
+	 */
+	public function reference(string $uid): DocumentReference
+	{
+		return $this->db->document($this->table . '/' . $uid);
 	}
 
 	//--------------------------------------------------------------------
@@ -665,7 +680,7 @@ class Model
 	 * @return CollectionReference|Query
 	 * @throws \CodeIgniter\Exceptions\ModelException;
 	 */
-	protected function builder(string $table = null, bool $refresh = false)
+	public function builder(string $table = null, bool $refresh = false)
 	{
 		if (! $refresh && $this->builder instanceof Query)
 		{

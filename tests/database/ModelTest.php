@@ -1,6 +1,7 @@
 <?php
 
 use CodeIgniter\Test\Fabricator;
+use Google\Cloud\Firestore\DocumentReference;
 use Tests\Support\FirestoreTestCase;
 use Tests\Support\Entities\Profile;
 use Tests\Support\Models\ColorModel;
@@ -72,5 +73,13 @@ class ModelTest extends FirestoreTestCase
 		$result = model(ColorModel::class, false)->findAll();
 
 		$this->assertCount(3, $result);
+	}
+
+	public function testReferenceReturnsDocumentReference()
+	{
+		$result = $this->model->reference('abc123');
+
+		$this->assertInstanceOf(DocumentReference::class, $result);
+		$this->assertEquals('abc123', $result->id());
 	}
 }
