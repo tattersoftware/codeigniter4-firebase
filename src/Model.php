@@ -245,7 +245,7 @@ class Model
 	 */
 	public function reference(string $uid): DocumentReference
 	{
-		return $this->builder(null, true)->document($uid);
+		return $this->builder(null, true)->document($uid); // @phpstan-ignore-line
 	}
 
 	//--------------------------------------------------------------------
