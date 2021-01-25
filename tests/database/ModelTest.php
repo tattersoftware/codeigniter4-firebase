@@ -81,5 +81,6 @@ class ModelTest extends FirestoreTestCase
 
 		$this->assertInstanceOf(DocumentReference::class, $result);
 		$this->assertEquals('abc123', $result->id());
+		$this->assertEquals('profiles/abc123', $result->path());
 	}
 }
