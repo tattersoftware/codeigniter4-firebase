@@ -13,6 +13,7 @@ jobs:
     name: Build and test
 
     strategy:
+      max-parallel: 1
       matrix:
         php-versions: ['7.2', '7.3', '7.4']
 
