@@ -10,10 +10,11 @@ parameters:
 		- src/Config/Routes.php
 		- src/Views/*
 	ignoreErrors:
-		- '#Call to an undefined static method Config\\Services::firebase\(\)#'
+		- '#Call to an undefined static method Config\\Services::[A-Za-z]+\(\)#'
 		- '#Cannot access property [\$a-z_]+ on (array|object)#'
 	universalObjectCratesClasses:
 		- CodeIgniter\Entity
+		- CodeIgniter\Entity\Entity
 		- Faker\Generator
 	scanDirectories:
 		- vendor/codeigniter4/codeigniter4/system/Helpers
