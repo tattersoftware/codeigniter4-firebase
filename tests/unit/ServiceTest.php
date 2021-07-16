@@ -1,20 +1,20 @@
 <?php
 
-class ServiceTest extends \CodeIgniter\Test\CIUnitTestCase
-{
-	public function setUp(): void
-	{
-		parent::setUp();
-	}
+use CodeIgniter\Test\CIUnitTestCase;
+use Config\Services;
+use Kreait\Firebase\Exception\Auth\AuthError;
+use Kreait\Firebase\Exception\InvalidArgumentException;
 
+class ServiceTest extends CIUnitTestCase
+{
 	public function testMissingKeyfile()
 	{
 		$keyfile = '/foo/bar/keyfile.json';
 
-		$this->expectException(\Kreait\Firebase\Exception\InvalidArgumentException::class);
+		$this->expectException(InvalidArgumentException::class);
 		$this->expectExceptionMessage('Invalid service account');
 
-		$firebase = \Config\Services::firebase($keyfile, false);
+		$firebase = Services::firebase($keyfile, false);
 		$firebase->firestore->database();
 	}
 
@@ -22,10 +22,10 @@ class ServiceTest extends \CodeIgniter\Test\CIUnitTestCase
 	{
 		$keyfile = SUPPORTPATH . 'keyfiles/invalid.json';
 
-		$this->expectException(\Kreait\Firebase\Exception\InvalidArgumentException::class);
+		$this->expectException(InvalidArgumentException::class);
 		$this->expectExceptionMessage('Invalid service account');
 
-		$firebase = \Config\Services::firebase($keyfile, false);
+		$firebase = Services::firebase($keyfile, false);
 		$firebase->firestore->database();
 	}
 
@@ -33,10 +33,10 @@ class ServiceTest extends \CodeIgniter\Test\CIUnitTestCase
 	{
 		$keyfile = SUPPORTPATH . 'keyfiles/example.json';
 
-		$this->expectException(\Kreait\Firebase\Exception\Auth\AuthError::class);
-		$this->expectExceptionMessage('supplied key param');
+		$this->expectException(AuthError::class);
+		$this->expectExceptionMessage('key param');
 
-		$firebase = \Config\Services::firebase($keyfile, false);
+		$firebase = Services::firebase($keyfile, false);
 		$firebase->auth->getUser('nonexistantuser');
 	}
 }

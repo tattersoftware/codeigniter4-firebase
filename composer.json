@@ -30,7 +30,6 @@
     },
     "require-dev": {
         "codeigniter4/codeigniter4": "dev-develop",
-        "tatter/accounts": "^1.0",
         "tatter/tools": "^1.10"
     },
     "autoload": {

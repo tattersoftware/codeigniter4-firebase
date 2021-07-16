@@ -39,7 +39,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           tools: composer, pecl, phive, phpunit
-          extensions: intl, json, mbstring, gd, mysqlnd, xdebug, xml, sqlite3
+          extensions: intl, json, mbstring, gd, mysqlnd, xdebug, xml, sqlite3, grpc
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
