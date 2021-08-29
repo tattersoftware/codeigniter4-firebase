@@ -1,6 +1,11 @@
 # Tatter\Firebase
 Firebase integration for CodeIgniter 4
 
+[![](https://github.com/tattersoftware/codeigniter4-firebase/workflows/PHPUnit/badge.svg)](https://github.com/tattersoftware/codeigniter4-firebase/actions/workflows/test.yml)
+[![](https://github.com/tattersoftware/codeigniter4-firebase/workflows/PHPStan/badge.svg)](https://github.com/tattersoftware/codeigniter4-firebase/actions/workflows/analyze.yml)
+[![](https://github.com/tattersoftware/codeigniter4-firebase/workflows/Deptrac/badge.svg)](https://github.com/tattersoftware/codeigniter4-firebase/actions/workflows/inspect.yml)
+[![Coverage Status](https://coveralls.io/repos/github/tattersoftware/codeigniter4-firebase/badge.svg?branch=develop)](https://coveralls.io/github/tattersoftware/codeigniter4-firebase?branch=develop)
+
 ## Quick Start
 
 1. Install with Composer: `> composer require tatter/firebase`

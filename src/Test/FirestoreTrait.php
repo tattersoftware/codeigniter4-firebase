@@ -1,6 +1,9 @@
-<?php namespace Tatter\Firebase\Test;
+<?php
+
+namespace Tatter\Firebase\Test;
 
 use Google\Cloud\Firestore\CollectionReference;
+use RuntimeException;
 
 /**
  * Trait to add some helpful utilities for testing with Firestore.
@@ -14,12 +17,23 @@ trait FirestoreTrait
 	{
 		if (ENVIRONMENT !== 'testing')
 		{
-			throw new \RuntimeException('This feature is only available during testing.'); 
+			throw new RuntimeException('This feature is only available during testing.'); // @codeCoverageIgnore
 		}
 
 		// Get the shared instance
 		$db = service('firebase')->firestore->database();
 
+		// Check for an emulated instance
+		if (defined('FIRESTORE_EMULATOR_HOST'))
+		{
+			$projectId = $this->getPrivateProperty($db, 'projectId');
+			$deleteUrl = 'http://' . FIRESTORE_EMULATOR_HOST . '/emulator/v1/projects/' . $projectId . '/databases/(default)/documents';
+
+			single_service('curlrequest')->delete($deleteUrl);
+			return;
+		}
+
+		// Otherwise delete each collection
 		foreach ($db->collections() as $collection)
 		{
 			$this->deleteCollection($collection);

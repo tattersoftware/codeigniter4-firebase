@@ -80,7 +80,7 @@ jobs:
           COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
 
       - name: Test with PHPUnit (Firebase Emulation)
-        run: firebase emulators:exec --token "${{ secrets.FIREBASE_TOKEN }}" "curl localhost:4400/emulators && vendor/bin/phpunit --verbose --coverage-text"
+        run: firebase emulators:exec --token "${{ secrets.FIREBASE_TOKEN }}" "vendor/bin/phpunit --verbose --coverage-text"
         env:
           TERM: xterm-256color
           TACHYCARDIA_MONITOR_GA: enabled
