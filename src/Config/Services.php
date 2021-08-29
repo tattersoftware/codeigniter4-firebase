@@ -11,7 +11,7 @@ class Services extends BaseService
 	 * @param mixed    $serviceAccount  Anything accepted by ServiceAccount::fromValue()
 	 * @param boolean  $getShared
 	 *
-	 * @return \Tatter\Firebase\Firebase
+	 * @return Firebase
 	 */
 	public static function firebase($serviceAccount = null, bool $getShared = true): Firebase
 	{

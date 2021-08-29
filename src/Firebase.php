@@ -1,5 +1,6 @@
 <?php namespace Tatter\Firebase;
 
+use InvalidArgumentException;
 use Kreait\Firebase\Factory;
 
 /**
@@ -19,7 +20,7 @@ class Firebase
 	/**
 	 * A pre-authenticated instance of the factory
 	 *
-	 * @var \Kreait\Firebase\Factory
+	 * @var Factory
 	 */
 	protected $factory;
 
@@ -43,7 +44,7 @@ class Firebase
 	/**
 	 * Checks for and creates an authenticated Factory
 	 *
-	 * @return \Kreait\Firebase\Factory
+	 * @return Factory
 	 */
 	protected function factory(): Factory
 	{
@@ -101,7 +102,7 @@ class Firebase
 			return new $className();
 		}
 
-		throw new \Exception("Property {$name} does not exist");
+		throw new InvalidArgumentException("Property {$name} does not exist");
 	}
 
 	/**
@@ -135,7 +136,7 @@ class Firebase
 	 * @param string $name
 	 * @param array  $params
 	 *
-	 * @return Model|null
+	 * @return mixed
 	 */
 	public function __call(string $name, array $params)
 	{

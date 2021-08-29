@@ -3,6 +3,7 @@
 use CodeIgniter\Test\Fabricator;
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Auth\UserRecord;
+use RuntimeException;
 use Tatter\Firebase\Model;
 
 /**
@@ -110,7 +111,7 @@ trait FirebaseUserTrait
 	{
 		if (ENVIRONMENT !== 'testing')
 		{
-			throw new \RuntimeException('This feature is only available during testing.'); 
+			throw new RuntimeException('This feature is only available during testing.');  // @codeCoverageIgnore
 		}
 
 		$this->initAuth();
