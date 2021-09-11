@@ -24,10 +24,10 @@ trait FirestoreTrait
 		$db = service('firebase')->firestore->database();
 
 		// Check for an emulated instance
-		if (defined('FIRESTORE_EMULATOR_HOST'))
+		if ($firestoreEmulatorHost = getenv('FIRESTORE_EMULATOR_HOST'))
 		{
 			$projectId = $this->getPrivateProperty($db, 'projectId');
-			$deleteUrl = 'http://' . FIRESTORE_EMULATOR_HOST . '/emulator/v1/projects/' . $projectId . '/databases/(default)/documents';
+			$deleteUrl = 'http://' . $firestoreEmulatorHost . '/emulator/v1/projects/' . $projectId . '/databases/(default)/documents';
 
 			single_service('curlrequest')->delete($deleteUrl);
 			return;
