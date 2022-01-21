@@ -3,65 +3,68 @@
 use Kreait\Firebase\Auth\UserRecord;
 use Kreait\Firebase\Exception\Auth\UserNotFound;
 
-class FirebaseUserTraitTest extends \CodeIgniter\Test\CIUnitTestCase
+/**
+ * @internal
+ */
+final class FirebaseUserTraitTest extends \CodeIgniter\Test\CIUnitTestCase
 {
-	use \Tatter\Firebase\Test\FirebaseUserTrait;
+    use \Tatter\Firebase\Test\FirebaseUserTrait;
 
-	/**
-	 * Instance of the Firebase SDK.
-	 *
-	 * @var Kreait\Firebase\Auth
-	 */
-	protected $firebase;
+    /**
+     * Instance of the Firebase SDK.
+     *
+     * @var Kreait\Firebase\Auth
+     */
+    protected $firebase;
 
-	protected function setUp(): void
-	{
-		parent::setUp();
-		
-		$this->firebase = service('firebase')->auth;
-	}
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-	protected function tearDown(): void
-	{
-		parent::tearDown();
-		
-		$this->firebaseUserTearDown();
-	}
+        $this->firebase = service('firebase')->auth;
+    }
 
-	public function testCreateUserReturnsUserRecord()
-	{
-		$user = $this->createFirebaseUser();
+    protected function tearDown(): void
+    {
+        parent::tearDown();
 
-		$this->assertInstanceOf(UserRecord::class, $user);
-	}
+        $this->firebaseUserTearDown();
+    }
 
-	public function testCreateUserCreatesUser()
-	{
-		$user = $this->createFirebaseUser();
+    public function testCreateUserReturnsUserRecord()
+    {
+        $user = $this->createFirebaseUser();
 
-		$test = $this->firebase->getUser($user->uid);
+        $this->assertInstanceOf(UserRecord::class, $user);
+    }
 
-		$this->assertInstanceOf(UserRecord::class, $test);
-		$this->assertEquals($user->email, $test->email);
-	}
+    public function testCreateUserCreatesUser()
+    {
+        $user = $this->createFirebaseUser();
 
-	public function testRemoveUserRemovesUser()
-	{
-		$user = $this->createFirebaseUser();
-		$this->removeFirebaseUser($user->uid);
+        $test = $this->firebase->getUser($user->uid);
 
-		$this->expectException(UserNotFound::class);
+        $this->assertInstanceOf(UserRecord::class, $test);
+        $this->assertSame($user->email, $test->email);
+    }
 
-		$test = $this->firebase->getUser($user->uid);
-	}
+    public function testRemoveUserRemovesUser()
+    {
+        $user = $this->createFirebaseUser();
+        $this->removeFirebaseUser($user->uid);
 
-	public function testTearDownRemovesUser()
-	{
-		$user = $this->createFirebaseUser();
-		$this->firebaseUserTearDown();
+        $this->expectException(UserNotFound::class);
 
-		$this->expectException(UserNotFound::class);
+        $test = $this->firebase->getUser($user->uid);
+    }
 
-		$test = $this->firebase->getUser($user->uid);
-	}
+    public function testTearDownRemovesUser()
+    {
+        $user = $this->createFirebaseUser();
+        $this->firebaseUserTearDown();
+
+        $this->expectException(UserNotFound::class);
+
+        $test = $this->firebase->getUser($user->uid);
+    }
 }

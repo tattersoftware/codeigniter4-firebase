@@ -1,6 +1,6 @@
-<?php namespace Tatter\Firebase\Components;
+<?php
 
-use Kreait\Firebase\Factory;
+namespace Tatter\Firebase\Components;
 
 /**
  * Class Caller
@@ -9,172 +9,162 @@ use Kreait\Firebase\Factory;
  */
 class Caller
 {
-	/**
-	 * UID of the user to make the request.
-	 *
-	 * @var string
-	 */
-	protected $uid;
+    /**
+     * UID of the user to make the request.
+     *
+     * @var string
+     */
+    protected $uid;
 
-	/**
-	 * A Firebase ID token for the user identified by $this->uid.
-	 *
-	 * @var string|null
-	 */
-	protected $token;
+    /**
+     * A Firebase ID token for the user identified by $this->uid.
+     *
+     * @var string|null
+     */
+    protected $token;
 
-	/**
-	 * Error messages from the last call
-	 *
-	 * @var array
-	 */
-	protected $errors = [];
+    /**
+     * Error messages from the last call
+     *
+     * @var array
+     */
+    protected $errors = [];
 
-	/**
-	 * Get and clear any error messsages
-	 *
-	 * @return array  Any error messages from the last call
-	 */
-	public function getErrors(): array
-	{
-		$errors       = $this->errors;
-		$this->errors = [];
+    /**
+     * Get and clear any error messsages
+     *
+     * @return array Any error messages from the last call
+     */
+    public function getErrors(): array
+    {
+        $errors       = $this->errors;
+        $this->errors = [];
 
-		return $errors;
-	}
+        return $errors;
+    }
 
-	/**
-	 * Sets the Firebase Authentication user UID used to make calls
-	 *
-	 * @param string $uid
-	 *
-	 * @return $this
-	 */
-	public function setUid(string $uid): self
-	{
-		// If this is a new user then clear an existing token
-		if ($uid != $this->uid)
-		{
-			$this->token = null;
-		}
+    /**
+     * Sets the Firebase Authentication user UID used to make calls
+     *
+     * @return $this
+     */
+    public function setUid(string $uid): self
+    {
+        // If this is a new user then clear an existing token
+        if ($uid !== $this->uid) {
+            $this->token = null;
+        }
 
-		$this->uid = $uid;
+        $this->uid = $uid;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Execute a Firebase callable function
-	 * https://firebase.google.com/docs/functions/callable-reference
-	 *
-	 * @param string $url   Callable endpoint URL
-	 * @param mixed  $data  Data to send to the endpoint
-	 *
-	 * @return mixed  Decoded response from the callable function, or null on failure
-	 */
-	public function call(string $url, $data)
-	{
-		// Reset errors
-		$this->errors = [];
+    /**
+     * Execute a Firebase callable function
+     * https://firebase.google.com/docs/functions/callable-reference
+     *
+     * @param string $url  Callable endpoint URL
+     * @param mixed  $data Data to send to the endpoint
+     *
+     * @return mixed Decoded response from the callable function, or null on failure
+     */
+    public function call(string $url, $data)
+    {
+        // Reset errors
+        $this->errors = [];
 
-		// Load the client
-		$client = service('curlrequest');
+        // Load the client
+        $client = service('curlrequest');
 
-		// Check if $data is already JSON
-		if (is_string($data) && json_decode($data, true))
-		{
-			$body = $data;
-		}
-		else
-		{
-			$body = json_encode(['data' => $data]);
-		}
-		unset($data);
+        // Check if $data is already JSON
+        if (is_string($data) && json_decode($data, true)) {
+            $body = $data;
+        } else {
+            $body = json_encode(['data' => $data]);
+        }
+        unset($data);
 
-		// Check for authorization
-		if ($this->uid)
-		{
-			$client->setHeader('Authorization', 'Bearer ' . $this->getToken());
-		}
-		$client->setHeader('Content-Type', 'application/json; charset=utf-8')->setBody($body);
+        // Check for authorization
+        if ($this->uid) {
+            $client->setHeader('Authorization', 'Bearer ' . $this->getToken());
+        }
+        $client->setHeader('Content-Type', 'application/json; charset=utf-8')->setBody($body);
 
-		// Make the call
-		$response = $client->post($url, ['http_errors' => false]);
+        // Make the call
+        $response = $client->post($url, ['http_errors' => false]);
 
-		// Verify it worked
-		if (empty($response))
-		{
-			$this->errors[] = 'Failed to execute remote request to ' . $url;
-			return null;
-		}
+        // Verify it worked
+        if (empty($response)) {
+            $this->errors[] = 'Failed to execute remote request to ' . $url;
 
-		// Decode the response
-		if (! $body = json_decode($response->getBody()))
-		{
-			$this->errors[] = 'Unable to decode response: ' . $body;
-			return null;
-		}
+            return null;
+        }
 
-		// Check for errors
-		if (! empty($body->error))
-		{
-			$this->errors[] = $body->error->message;
-			$this->errors[] = $body->error->status;
+        // Decode the response
+        if (! $body = json_decode($response->getBody())) {
+            $this->errors[] = 'Unable to decode response: ' . $body;
 
-			if (! empty($body->error->details))
-			{
-				foreach ($body->error->details as $key => $value)
-				{
-					$this->errors[] = "$key : $value";
-				}
-			}
+            return null;
+        }
 
-			return null;
-		}
+        // Check for errors
+        if (! empty($body->error)) {
+            $this->errors[] = $body->error->message;
+            $this->errors[] = $body->error->status;
 
-		// Verify the data
-		if (! isset($body->result))
-		{
-			$this->errors[] = 'Result missing from response: ' . $response->getBody();
-			return null;
-		}
+            if (! empty($body->error->details)) {
+                foreach ($body->error->details as $key => $value) {
+                    $this->errors[] = "{$key} : {$value}";
+                }
+            }
 
-		// Otherwise it was a success! Return the data
-		return $body->result;
-	}
+            return null;
+        }
 
-	/**
-	 * Fetches a Firebase ID token for the current user
-	 *
-	 * @param bool $forceRefresh  Whether get a new token even if one exists
-	 *
-	 * @return string  The token
-	 */
-	protected function getToken($forceRefresh = false): ?string
-	{
-		if ($this->token && $forceRefresh === false)
-		{
-			return $this->token;
-		}
+        // Verify the data
+        if (! isset($body->result)) {
+            $this->errors[] = 'Result missing from response: ' . $response->getBody();
 
-		if (empty($this->uid))
-		{
-			$this->errors[] = 'You must specify a user before using callable functions!';
-			return null;
-		}
+            return null;
+        }
 
-		// Get the auth component
-		$auth = service('firebase')->auth;
+        // Otherwise it was a success! Return the data
+        return $body->result;
+    }
 
-		// Get a user token
-		if (! $response = $auth->signInAsUser($this->uid))
-		{
-			$this->errors[] = 'Unable to generate custom token for user ' . $this->uid;
-			return null;
-		}
+    /**
+     * Fetches a Firebase ID token for the current user
+     *
+     * @param bool $forceRefresh Whether get a new token even if one exists
+     *
+     * @return string The token
+     */
+    protected function getToken($forceRefresh = false): ?string
+    {
+        if ($this->token && $forceRefresh === false) {
+            return $this->token;
+        }
 
-		// Store the actual ID token
-		$this->token = $response->idToken();
-		return $this->token;
-	}
+        if (empty($this->uid)) {
+            $this->errors[] = 'You must specify a user before using callable functions!';
+
+            return null;
+        }
+
+        // Get the auth component
+        $auth = service('firebase')->auth;
+
+        // Get a user token
+        if (! $response = $auth->signInAsUser($this->uid)) {
+            $this->errors[] = 'Unable to generate custom token for user ' . $this->uid;
+
+            return null;
+        }
+
+        // Store the actual ID token
+        $this->token = $response->idToken();
+
+        return $this->token;
+    }
 }

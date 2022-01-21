@@ -1,24 +1,26 @@
 <?php
 
 use CodeIgniter\Test\CIUnitTestCase;
-use Config\Services;
 
-class CallerTest extends CIUnitTestCase
+/**
+ * @internal
+ */
+final class CallerTest extends CIUnitTestCase
 {
-	public function testGetErrors()
-	{
-		$caller = service('firebase')->caller;
+    public function testGetErrors()
+    {
+        $caller = service('firebase')->caller;
 
-		$this->assertSame([], $caller->getErrors());
-	}
+        $this->assertSame([], $caller->getErrors());
+    }
 
-	public function testSetUid()
-	{
-		$caller = service('firebase')->caller;
+    public function testSetUid()
+    {
+        $caller = service('firebase')->caller;
 
-		$caller->setUid('banana');
-		$result = $this->getPrivateProperty($caller, 'uid');
+        $caller->setUid('banana');
+        $result = $this->getPrivateProperty($caller, 'uid');
 
-		$this->assertSame('banana', $result);
-	}
+        $this->assertSame('banana', $result);
+    }
 }

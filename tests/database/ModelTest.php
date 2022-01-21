@@ -2,85 +2,88 @@
 
 use CodeIgniter\Test\Fabricator;
 use Google\Cloud\Firestore\DocumentReference;
-use Tests\Support\FirestoreTestCase;
 use Tests\Support\Entities\Profile;
+use Tests\Support\FirestoreTestCase;
 use Tests\Support\Models\ColorModel;
 use Tests\Support\Models\ProfileModel;
 
-class ModelTest extends FirestoreTestCase
+/**
+ * @internal
+ */
+final class ModelTest extends FirestoreTestCase
 {
-	/**
-	 * @var ProfileModel
-	 */
-	private $model;
+    /**
+     * @var ProfileModel
+     */
+    private $model;
 
-	/**
-	 * @var Fabricator
-	 */
-	private $fabricator;
+    /**
+     * @var Fabricator
+     */
+    private $fabricator;
 
-	public function setUp(): void
-	{
-		parent::setUp();
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-		$this->model      = new ProfileModel();
-		$this->fabricator = new Fabricator($this->model);
-	}
+        $this->model      = new ProfileModel();
+        $this->fabricator = new Fabricator($this->model);
+    }
 
-	public function tearDown(): void
-	{
-		parent::tearDown();
+    protected function tearDown(): void
+    {
+        parent::tearDown();
 
-		$this->model->reset();
-		unset($this->model, $this->fabricator);
-	}
+        $this->model->reset();
+        unset($this->model, $this->fabricator);
+    }
 
-	public function testCanInsert()
-	{
-		$profile = $this->fabricator->make();
+    public function testCanInsert()
+    {
+        $profile = $this->fabricator->make();
 
-		$result = $this->model->insert($profile);
-		$this->assertIsString($result);
-	}
+        $result = $this->model->insert($profile);
+        $this->assertIsString($result);
+    }
 
-	public function testCanFindByUid()
-	{
-		/** @var Profile $profile */
-		$profile = $this->fabricator->make();
-		$uid     = $this->model->insert($profile);
+    public function testCanFindByUid()
+    {
+        /** @var Profile $profile */
+        $profile = $this->fabricator->make();
+        $uid     = $this->model->insert($profile);
 
-		$result = $this->model->find($uid);
+        $result = $this->model->find($uid);
 
-		$this->assertEquals($profile->lastName, $result->lastName); // @phpstan-ignore-line
-	}
+        $this->assertSame($profile->lastName, $result->lastName); // @phpstan-ignore-line
+    }
 
-	public function testWorksWithFabricator()
-	{
-		$result = $this->fabricator->create();
+    public function testWorksWithFabricator()
+    {
+        $result = $this->fabricator->create();
 
-		$this->assertIsString($result->uid);
-	}
+        $this->assertIsString($result->uid);
+    }
 
-	public function testCanCountResults()
-	{
-		$result = $this->model->countAllResults();
+    public function testCanCountResults()
+    {
+        $result = $this->model->countAllResults();
 
-		$this->assertIsInt($result);
-	}
+        $this->assertIsInt($result);
+    }
 
-	public function testGroupedLoadsSubcollectionRows()
-	{
-		$result = (new ColorModel())->findAll();
+    public function testGroupedLoadsSubcollectionRows()
+    {
+        $result = (new ColorModel())->findAll();
 
-		$this->assertCount(3, $result);
-	}
+        $this->assertCount(3, $result);
+    }
 
-	public function testReferenceReturnsDocumentReference()
-	{
-		$result = $this->model->reference('abc123');
+    public function testReferenceReturnsDocumentReference()
+    {
+        $result = $this->model->reference('abc123');
 
-		$this->assertInstanceOf(DocumentReference::class, $result);
-		$this->assertEquals('abc123', $result->id());
-		$this->assertEquals('profiles/abc123', $result->path());
-	}
+        $this->assertInstanceOf(DocumentReference::class, $result);
+        $this->assertSame('abc123', $result->id());
+        $this->assertSame('profiles/abc123', $result->path());
+    }
 }
