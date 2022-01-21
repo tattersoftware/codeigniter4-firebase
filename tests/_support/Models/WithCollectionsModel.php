@@ -23,8 +23,8 @@ class WithCollectionsModel extends Model
         return new Profile([
             'firstName' => $faker->firstName,
             'lastName'  => $faker->lastName,
-            'age'       => mt_rand(5, 90),
-            'weight'    => mt_rand(110, 280),
+            'age'       => random_int(5, 90),
+            'weight'    => random_int(110, 280),
         ]);
     }
 }

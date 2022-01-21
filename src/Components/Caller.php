@@ -78,11 +78,7 @@ class Caller
         $client = service('curlrequest');
 
         // Check if $data is already JSON
-        if (is_string($data) && json_decode($data, true)) {
-            $body = $data;
-        } else {
-            $body = json_encode(['data' => $data]);
-        }
+        $body = is_string($data) && json_decode($data, true) ? $data : json_encode(['data' => $data]);
         unset($data);
 
         // Check for authorization

@@ -190,7 +190,7 @@ class Model
     /**
      * Our validator instance.
      *
-     * @var \CodeIgniter\Validation\ValidationInterface
+     * @var ValidationInterface
      */
     protected $validation;
 
@@ -301,11 +301,7 @@ class Model
         $snapshot = $this->builder()->documents();
 
         // If nothing matched then we're done
-        if ($snapshot->isEmpty()) {
-            $this->documents = [];
-        } else {
-            $this->documents = $snapshot->rows();
-        }
+        $this->documents = $snapshot->isEmpty() ? [] : $snapshot->rows();
 
         return $reset ? $this->reset() : $this;
     }
@@ -624,7 +620,7 @@ class Model
      * @param string $table
      * @param bool   $refresh Resets the builder back to a clean CollectionReference
      *
-     * @throws \CodeIgniter\Exceptions\ModelException;
+     * @throws ModelException ;
      *
      * @return CollectionReference|Query
      */
@@ -697,7 +693,6 @@ class Model
     }
 
     //--------------------------------------------------------------------
-
     /**
      * Ensures that only the fields that are allowed to be updated
      * are in the data array.
@@ -705,7 +700,7 @@ class Model
      * Used by insert() and update() to protect against mass assignment
      * vulnerabilities.
      *
-     * @throws \CodeIgniter\Database\Exceptions\DataException
+     * @throws DataException
      */
     protected function doProtectFields(array $data): array
     {
@@ -718,7 +713,7 @@ class Model
         }
 
         if (is_array($data) && count($data)) {
-            foreach ($data as $key => $val) {
+            foreach (array_keys($data) as $key) {
                 if (! in_array($key, $this->allowedFields, true)) {
                     unset($data[$key]);
                 }
@@ -767,13 +762,7 @@ class Model
      */
     public static function classToArray($data, $primaryKey = null, string $dateFormat = 'datetime'): array
     {
-        if (method_exists($data, 'toRawArray')) {
-            $properties = $data->toRawArray();
-        } else {
-            $properties = (array) $data;
-        }
-
-        return $properties;
+        return method_exists($data, 'toRawArray') ? $data->toRawArray() : (array) $data;
     }
 
     /**
@@ -823,6 +812,6 @@ class Model
             return true;
         }
 
-        return (bool) (isset($this->builder()->{$name}));
+        return isset($this->builder()->{$name});
     }
 }

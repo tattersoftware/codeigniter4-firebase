@@ -1,19 +1,22 @@
 <?php
 
+use CodeIgniter\Test\CIUnitTestCase;
+use Kreait\Firebase\Auth;
 use Kreait\Firebase\Auth\UserRecord;
 use Kreait\Firebase\Exception\Auth\UserNotFound;
+use Tatter\Firebase\Test\FirebaseUserTrait;
 
 /**
  * @internal
  */
-final class FirebaseUserTraitTest extends \CodeIgniter\Test\CIUnitTestCase
+final class FirebaseUserTraitTest extends CIUnitTestCase
 {
-    use \Tatter\Firebase\Test\FirebaseUserTrait;
+    use FirebaseUserTrait;
 
     /**
      * Instance of the Firebase SDK.
      *
-     * @var Kreait\Firebase\Auth
+     * @var Auth
      */
     protected $firebase;
 
@@ -55,7 +58,7 @@ final class FirebaseUserTraitTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $this->expectException(UserNotFound::class);
 
-        $test = $this->firebase->getUser($user->uid);
+        $this->firebase->getUser($user->uid);
     }
 
     public function testTearDownRemovesUser()
@@ -65,6 +68,6 @@ final class FirebaseUserTraitTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $this->expectException(UserNotFound::class);
 
-        $test = $this->firebase->getUser($user->uid);
+        $this->firebase->getUser($user->uid);
     }
 }

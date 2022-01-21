@@ -3,6 +3,7 @@
 namespace Tatter\Firebase;
 
 use CodeIgniter\Entity\Entity as BaseEntity;
+use CodeIgniter\I18n\Time;
 use Exception;
 use Google\Cloud\Core\Timestamp;
 use Google\Cloud\Firestore\DocumentReference;
@@ -33,11 +34,11 @@ class Entity extends BaseEntity
      * Converts the given item into a \CodeIgniter\I18n\Time object.
      * Adds support for Google\Cloud\Core\Timestamp
      *
-     * @param \CodeIgniter\I18n\Time|Timestamp $value
+     * @param Time|Timestamp $value
      *
      * @throws Exception
      *
-     * @return \CodeIgniter\I18n\Time
+     * @return Time
      */
     protected function mutateDate($value)
     {

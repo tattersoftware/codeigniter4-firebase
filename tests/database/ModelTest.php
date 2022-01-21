@@ -12,15 +12,8 @@ use Tests\Support\Models\ProfileModel;
  */
 final class ModelTest extends FirestoreTestCase
 {
-    /**
-     * @var ProfileModel
-     */
-    private $model;
-
-    /**
-     * @var Fabricator
-     */
-    private $fabricator;
+    private ProfileModel $model;
+    private Fabricator $fabricator;
 
     protected function setUp(): void
     {

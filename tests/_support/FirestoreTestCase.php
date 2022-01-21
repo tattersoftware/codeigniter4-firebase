@@ -4,6 +4,7 @@ namespace Tests\Support;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\Fabricator;
+use Tatter\Firebase\Test\FirestoreTrait;
 use Tests\Support\Models\ColorModel;
 use Tests\Support\Models\ProfileModel;
 
@@ -12,7 +13,7 @@ use Tests\Support\Models\ProfileModel;
  */
 abstract class FirestoreTestCase extends CIUnitTestCase
 {
-    use \Tatter\Firebase\Test\FirestoreTrait;
+    use FirestoreTrait;
 
     /**
      * UID of the Profile with a subcollection.
