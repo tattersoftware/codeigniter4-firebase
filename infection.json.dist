@@ -4,6 +4,7 @@
 			"src/"
 		],
 		"excludes": [
+			"Accounts",
 			"Config",
 			"Database/Migrations",
 			"Views"
