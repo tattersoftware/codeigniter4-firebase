@@ -1,6 +1,6 @@
 paths:
-  - ./src
-  - ./vendor/codeigniter4/codeigniter4/system
+  - ./src/
+  - ./vendor/codeigniter4/framework/system
   - ./vendor/tatter
 exclude_files:
   - '#.*test.*#i'
@@ -10,7 +10,7 @@ layers:
       - type: bool
         must:
         - type: className
-          regex: .*[A-Za-z]+Model.*
+          regex: .*[A-Za-z]+Model$
         must_not:
         - type: directory
           regex: vendor/.*
@@ -19,7 +19,7 @@ layers:
       - type: bool
         must:
         - type: className
-          regex: .*[A-Za-z]+Model.*
+          regex: .*[A-Za-z]+Model$
         - type: directory
           regex: vendor/.*
   - name: Controller
@@ -109,6 +109,7 @@ ruleset:
     - Entity
     - Service
     - Vendor Config
+    - Vendor Entity
     - Vendor Model
   Service:
     - Config
@@ -116,6 +117,7 @@ ruleset:
 
   # Ignore anything in the Vendor layers
   Vendor Model:
+    - Config
     - Service
     - Vendor Config
     - Vendor Controller
@@ -130,6 +132,7 @@ ruleset:
     - Vendor Model
     - Vendor View
   Vendor Config:
+    - Config
     - Service
     - Vendor Config
     - Vendor Controller

@@ -1,33 +1,23 @@
 <?php
 
+use CodeIgniter\CodingStandard\CodeIgniter4;
 use Nexus\CsConfig\Factory;
 use PhpCsFixer\Finder;
-use Tatter\Tools\Standard;
 
 $finder = Finder::create()
     ->files()
-    ->in(__DIR__)
+    ->in([
+        __DIR__ . '/src/',
+        __DIR__ . '/tests/',
+    ])
     ->exclude('build')
     ->append([__FILE__]);
 
-// Remove overrides for incremental changes
-$overrides = [
-	'array_indentation' => false,
-	'braces'            => false,
-	'indentation_type'  => false,
-];
+$overrides = [];
 
 $options = [
     'finder'    => $finder,
     'cacheFile' => 'build/.php-cs-fixer.cache',
 ];
 
-/* Reenable after incremental changes are applied
-return Factory::create(new Standard(), $overrides, $options)->forLibrary(
-    'Library',
-    'Tatter Software',
-    '',
-    2021
-);
-*/
-return Factory::create(new Standard(), $overrides, $options)->forProjects();
+return Factory::create(new CodeIgniter4(), $overrides, $options)->forProjects();

@@ -4,23 +4,30 @@ on:
   pull_request:
     branches:
       - develop
+    paths:
+      - '**.php'
+      - 'composer.**'
+      - 'phpunit*'
+      - '.github/workflows/phpunit.yml'
   push:
     branches:
       - develop
+    paths:
+      - '**.php'
+      - 'composer.**'
+      - 'phpunit*'
+      - '.github/workflows/phpunit.yml'
 
 jobs:
   main:
     name: PHP ${{ matrix.php-versions }} Unit Tests
-
-    strategy:
-      matrix:
-        php-versions: ['7.3', '7.4', '8.0']
-
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     env:
       FIREBASE_EMULATORS_PATH: ${{ github.workspace }}/emulator-cache
-
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    strategy:
+      matrix:
+        php-versions: ['7.4', '8.0', '8.1']
 
     steps:
       - name: Checkout
@@ -48,12 +55,12 @@ jobs:
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
 
-      - name: Setup PHP, with composer and extensions
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          tools: composer, pecl, phpunit
-          extensions: intl, json, mbstring, gd, mysqlnd, xdebug, xml, sqlite3, grpc
+          tools: composer, phive, phpunit
+          extensions: intl, json, mbstring, gd, xdebug, xml, sqlite3, grpc
           coverage: xdebug
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,18 +73,17 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install dependencies (limited)
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
-        run: composer update --no-progress --no-interaction --prefer-dist --optimize-autoloader
-
-      - name: Install dependencies (authenticated)
-        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name }}
-        run: composer update --no-progress --no-interaction --prefer-dist --optimize-autoloader
-        env:
-          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+      - name: Install dependencies
+        run: |
+          composer -q config -g github-oauth.github.com "${{ secrets.GITHUB_TOKEN }}"
+          if [ -f composer.lock ]; then
+            composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
+          else
+            composer update --no-progress --no-interaction --prefer-dist --optimize-autoloader
+          fi
 
       - name: Test with PHPUnit (Firebase Emulation)
         run: firebase emulators:exec --token "${{ secrets.FIREBASE_TOKEN }}" "vendor/bin/phpunit --verbose --coverage-text"
@@ -87,15 +93,11 @@ jobs:
           FIRESTORE_EMULATOR_HOST: localhost:8080
 
       - if: matrix.php-versions == '8.0'
-        name: Mutate with Infection
-        run: |
-          composer global require infection/infection
-          git fetch --depth=1 origin $GITHUB_BASE_REF
-          infection --threads=2 --skip-initial-tests --coverage=build/phpunit --git-diff-base=origin/$GITHUB_BASE_REF --git-diff-filter=AM --logger-github --ignore-msi-with-no-mutations
-
-      - if: matrix.php-versions == '8.0'
         name: Run Coveralls
-        run: vendor/bin/php-coveralls --verbose --coverage_clover=build/phpunit/clover.xml --json_path build/phpunit/coveralls-upload.json
+        continue-on-error: true
+        run: |
+          sudo phive --no-progress install --global --trust-gpg-keys E82B2FB314E9906E php-coveralls
+          php-coveralls --verbose --coverage_clover=build/phpunit/clover.xml --json_path build/phpunit/coveralls-upload.json
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_PARALLEL: true
@@ -108,6 +110,7 @@ jobs:
     steps:
       - name: Upload Coveralls results
         uses: coverallsapp/github-action@master
+        continue-on-error: true
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
