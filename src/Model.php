@@ -395,7 +395,7 @@ class Model
 				$result[] = (object) $row;
 			}
 			// If it is an Entity then use the native constructor fill
-			elseif (is_a($type, '\CodeIgniter\Entity', true))
+			elseif (is_a($type, '\CodeIgniter\Entity\Entity', true))
 			{
 				$entity = new $type($row);
 

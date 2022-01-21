@@ -70,7 +70,7 @@ class ModelTest extends FirestoreTestCase
 
 	public function testGroupedLoadsSubcollectionRows()
 	{
-		$result = model(ColorModel::class, false)->findAll();
+		$result = (new ColorModel())->findAll();
 
 		$this->assertCount(3, $result);
 	}

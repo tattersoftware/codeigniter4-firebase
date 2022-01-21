@@ -13,7 +13,7 @@ class EntityTest extends FirestoreTestCase
 {
 	public function testGetsSubcollection()
 	{
-		$profile = model(ProfileModel::class)->find($this->profileUid);
+		$profile = (new ProfileModel())->find($this->profileUid);
 		$result  = $profile->colors;
 
 		$this->assertInstanceOf(CollectionReference::class, $result);
@@ -21,7 +21,7 @@ class EntityTest extends FirestoreTestCase
 
 	public function testUsesCollectionModel()
 	{
-		$profile = model(WithCollectionsModel::class)->find($this->profileUid);
+		$profile = (new WithCollectionsModel())->find($this->profileUid);
 		$result  = $profile->colors;
 
 		$this->assertInstanceOf(ColorModel::class, $result);
@@ -29,7 +29,7 @@ class EntityTest extends FirestoreTestCase
 
 	public function testModelGetsRows()
 	{
-		$profile = model(WithCollectionsModel::class)->find($this->profileUid);
+		$profile = (new WithCollectionsModel())->find($this->profileUid);
 		$colors  = $profile->colors->findAll();
 
 		$this->assertCount(2, $colors);
@@ -37,7 +37,7 @@ class EntityTest extends FirestoreTestCase
 
 	public function testCollectionInsertAddsRow()
 	{
-		$profile = model(WithCollectionsModel::class)->find($this->profileUid);
+		$profile = (new WithCollectionsModel())->find($this->profileUid);
 		$profile->colors->insert(['name' => 'gray', 'hex' => '#999999']);
 
 		$colors = $profile->colors->findAll();

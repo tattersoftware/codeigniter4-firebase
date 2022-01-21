@@ -1,11 +1,12 @@
 <?php namespace Tatter\Firebase;
 
+use CodeIgniter\Entity\Entity as BaseEntity;
 use DateTimeZone;
 use Google\Cloud\Core\Timestamp;
 use Google\Cloud\Firestore\DocumentReference;
 use Tatter\Firebase\Model;
 
-class Entity extends \CodeIgniter\Entity
+class Entity extends BaseEntity
 {
 	protected $primaryKey = 'uid';
 
@@ -115,7 +116,7 @@ class Entity extends \CodeIgniter\Entity
 			elseif (is_string($this->collections[$key]))
 			{
 				$collection = $this->document()->collection($key);
-				$this->collections[$key] = model($this->collections[$key])->setBuilder($collection);
+				$this->collections[$key] = model($this->collections[$key])->setBuilder($collection); // @phpstan-ignore-line
 			}
 
 			return $this->collections[$key];
