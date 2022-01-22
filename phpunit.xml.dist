@@ -100,6 +100,6 @@
 		<env name="database.tests.DBPrefix" value="tests_"/>
 		-->
 
-		<env name="FIREBASE_CREDENTIALS" value="keyfile.json"/>
+		<env name="GOOGLE_APPLICATION_CREDENTIALS" value="keyfile.json"/>
 	</php>
 </phpunit>

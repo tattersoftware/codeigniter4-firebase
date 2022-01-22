@@ -9,7 +9,7 @@ Firebase integration for CodeIgniter 4
 ## Quick Start
 
 1. Install with Composer: `> composer require tatter/firebase`
-2. Set the environment to locate your app credentials: **.env** > FIREBASE_CREDENTIALS
+2. Edit **.env** and add the path to your Firebase credentials: `GOOGLE_APPLICATION_CREDENTIALS = ../credentials/keyfile.json`
 3. Load the service: `$firebase = service('firebase');`
 
 ## Description
@@ -45,7 +45,7 @@ You must provide a key file with your application's service account credentials.
 way to do this is to add **keyfile.json** to your project and edit **.env** to its path
 (relative to **public/**):
 
-	FIREBASE_CREDENTIALS = ../keyfile.json
+	GOOGLE_APPLICATION_CREDENTIALS = ../keyfile.json
 
 > *WARNING* Make sure you exclude the key file from any repository updates!
 
