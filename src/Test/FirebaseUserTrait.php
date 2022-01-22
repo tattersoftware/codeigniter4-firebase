@@ -1,137 +1,127 @@
-<?php namespace Tatter\Firebase\Test;
+<?php
+
+namespace Tatter\Firebase\Test;
 
 use CodeIgniter\Test\Fabricator;
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Auth\UserRecord;
 use RuntimeException;
-use Tatter\Firebase\Model;
 
 /**
  * Trait to use when testing requires a valid Firebase user account.
  */
 trait FirebaseUserTrait
 {
-	/**
-	 * Instance of the Firebase SDK.
-	 *
-	 * @var Auth|null
-	 */
-	protected static $auth;
+    /**
+     * Instance of the Firebase SDK.
+     *
+     * @var Auth|null
+     */
+    protected static $auth;
 
-	/**
-	 * Fabricator for generating faux content.
-	 *
-	 * @var Fabricator|null
-	 */
-	protected static $fabricator;
+    /**
+     * Fabricator for generating faux content.
+     *
+     * @var Fabricator|null
+     */
+    protected static $fabricator;
 
-	/**
-	 * Array of user account UIDs to be removed.
-	 *
-	 * @var array
-	 */
-	protected $firebaseUserCache = [];
+    /**
+     * Array of user account UIDs to be removed.
+     *
+     * @var array
+     */
+    protected $firebaseUserCache = [];
 
-	/**
-	 * Ensures the static instances are loaded.
-	 *
-	 * @return $this
-	 */
-	protected function initAuth(): self
-	{
-		if (! self::$auth)
-		{
-			self::$auth = service('firebase')->auth;
-		}
+    /**
+     * Ensures the static instances are loaded.
+     *
+     * @return $this
+     */
+    protected function initAuth(): self
+    {
+        if (! self::$auth) {
+            self::$auth = service('firebase')->auth;
+        }
 
-		if (! self::$fabricator)
-		{
-			self::$fabricator = new Fabricator('Tatter\Firebase\Model', [
-				'email'       => 'email',
-				'displayName' => 'name',
-				//'phoneNumber' => 'phoneNumber', // Faker phone numbers aren't currently acceptable
-			]);
-		}
+        if (! self::$fabricator) {
+            self::$fabricator = new Fabricator('Tatter\Firebase\Model', [
+                'email'       => 'email',
+                'displayName' => 'name',
+                //'phoneNumber' => 'phoneNumber', // Faker phone numbers aren't currently acceptable
+            ]);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Creates a random Firebase Auth user on-the-fly.
-	 *
-	 * @param array|null $overrides  Overriding data to use with the Fabricator
-	 *
-	 * @return UserRecord
-	 */
-	protected function createFirebaseUser(array $overrides = null): UserRecord
-	{
-		$this->initAuth();
+    /**
+     * Creates a random Firebase Auth user on-the-fly.
+     *
+     * @param array|null $overrides Overriding data to use with the Fabricator
+     */
+    protected function createFirebaseUser(?array $overrides = null): UserRecord
+    {
+        $this->initAuth();
 
-		if ($overrides)
-		{
-			self::$fabricator->setOverrides($overrides, false);
-		}
+        if ($overrides) {
+            self::$fabricator->setOverrides($overrides, false);
+        }
 
-		// Generate random data from the fabricator
-		$data = self::$fabricator->makeArray();
-		
-		// Make sure there is a password
-		if (empty($data['password']))
-		{
-			$data['password'] = bin2hex(random_bytes(16));
-		}
+        // Generate random data from the fabricator
+        $data = self::$fabricator->makeArray();
 
-		// Create the user account
-		$user = self::$auth->createUser($data);
-		
-		// Store it in the cache for removal later
-		$this->firebaseUserCache[] = $user->uid;
+        // Make sure there is a password
+        if (empty($data['password'])) {
+            $data['password'] = bin2hex(random_bytes(16));
+        }
 
-		return $user;
-	}
+        // Create the user account
+        $user = self::$auth->createUser($data);
 
-	/**
-	 * Removes a Firebase Auth user.
-	 *
-	 * @param string $uid
-	 */
-	protected function removeFirebaseUser(string $uid)
-	{
-		$this->initAuth();
+        // Store it in the cache for removal later
+        $this->firebaseUserCache[] = $user->uid;
 
-		self::$auth->deleteUser($uid);
+        return $user;
+    }
 
-		$this->firebaseUserCache = array_diff($this->firebaseUserCache, [$uid]);
-	}
+    /**
+     * Removes a Firebase Auth user.
+     */
+    protected function removeFirebaseUser(string $uid)
+    {
+        $this->initAuth();
 
-	/**
-	 * Removes all accounts from Firebase Auth.
-	 */
-	protected function clearFirebaseAuth()
-	{
-		if (ENVIRONMENT !== 'testing')
-		{
-			throw new RuntimeException('This feature is only available during testing.');  // @codeCoverageIgnore
-		}
+        self::$auth->deleteUser($uid);
 
-		$this->initAuth();
+        $this->firebaseUserCache = array_diff($this->firebaseUserCache, [$uid]);
+    }
 
-		foreach (self::$auth->listUsers() as $user)
-		{
-			self::$auth->deleteUser($user->uid);
-		}
+    /**
+     * Removes all accounts from Firebase Auth.
+     */
+    protected function clearFirebaseAuth()
+    {
+        if (ENVIRONMENT !== 'testing') {
+            throw new RuntimeException('This feature is only available during testing.');  // @codeCoverageIgnore
+        }
 
-		$this->firebaseUserCache = [];
-	}
+        $this->initAuth();
 
-	/**
-	 * Removes any Firebase Auth users in the cache.
-	 */
-	protected function firebaseUserTearDown()
-	{
-		foreach ($this->firebaseUserCache as $uid)
-		{
-			$this->removeFirebaseUser($uid);
-		}
-	}
+        foreach (self::$auth->listUsers() as $user) {
+            self::$auth->deleteUser($user->uid);
+        }
+
+        $this->firebaseUserCache = [];
+    }
+
+    /**
+     * Removes any Firebase Auth users in the cache.
+     */
+    protected function firebaseUserTearDown()
+    {
+        foreach ($this->firebaseUserCache as $uid) {
+            $this->removeFirebaseUser($uid);
+        }
+    }
 }
