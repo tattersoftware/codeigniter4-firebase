@@ -52,8 +52,11 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Install Firebase Tools
-        run: npm install -g firebase-tools
+      - name: Start Firebase Emulation
+        run: |
+          npm install -g firebase-tools
+          firebase emulators:start --token "${{ secrets.FIREBASE_TOKEN }}" &
+
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -85,8 +88,8 @@ jobs:
             composer update --no-progress --no-interaction --prefer-dist --optimize-autoloader
           fi
 
-      - name: Test with PHPUnit (Firebase Emulation)
-        run: firebase emulators:exec --token "${{ secrets.FIREBASE_TOKEN }}" "vendor/bin/phpunit --verbose --coverage-text"
+      - name: Test with PHPUnit
+        run: vendor/bin/phpunit --verbose --coverage-text
         env:
           TERM: xterm-256color
           TACHYCARDIA_MONITOR_GA: enabled
