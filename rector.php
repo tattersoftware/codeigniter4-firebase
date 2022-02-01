@@ -21,7 +21,6 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
 use Rector\DeadCode\Rector\MethodCall\RemoveEmptyMethodCallRector;
-use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
 use Rector\EarlyReturn\Rector\Foreach_\ChangeNestedForeachIfsToEarlyContinueRector;
 use Rector\EarlyReturn\Rector\If_\ChangeIfElseValueAssignToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
@@ -52,10 +51,19 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         __DIR__ . '/tests/',
     ]);
 
+    // Include Composer's autoload - required for global execution, remove if running locally
+    $parameters->set(Option::AUTOLOAD_PATHS, [
+        __DIR__ . '/vendor/autoload.php',
+    ]);
+
     // Do you need to include constants, class aliases, or a custom autoloader?
     $parameters->set(Option::BOOTSTRAP_FILES, [
         realpath(getcwd()) . '/vendor/codeigniter4/framework/system/Test/bootstrap.php',
     ]);
+
+    if (is_file(__DIR__ . '/phpstan.neon.dist')) {
+        $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, __DIR__ . '/phpstan.neon.dist');
+    }
 
     // Set the target version for refactoring
     $parameters->set(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_74);
@@ -78,9 +86,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             __DIR__ . '/tests',
         ],
 
-        // Ignore tests that should always call parent setUp/tearDown
-        RemoveParentCallWithoutParentRector::class => [
-            __DIR__ . '/tests',
+        // Ignore files that should not be namespaced
+        NormalizeNamespaceByPSR4ComposerAutoloadRector::class => [
+            __DIR__ . '/src/Helpers',
         ],
 
         // May load view files directly when detecting classes
