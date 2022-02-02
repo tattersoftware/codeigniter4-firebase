@@ -97,30 +97,9 @@ abstract class Collection
      */
     protected $updatedField = 'updatedAt';
 
-    /**
-     * @param CollectionReference|DocumentReference|Entity|null $source A Firestore component to initialize the (sub)collection:
-     *                                                                  - CollectionReference is an explicit (sub)collection
-     *                                                                  - DocumentReference or Entity will become the parent for a subcollection
-     *                                                                  - Null will use the name to reference a top-level collection
-     */
-    final public function __construct($source = null, ?ValidationInterface $validation = null)
+    final public function __construct(?CollectionReference $collection = null, ?ValidationInterface $validation = null)
     {
-        // Determine the actual CollectionReference
-        if ($source === null) {
-            $this->collection = service('firebase')->firestore->database()->collection(static::NAME);
-        } elseif ($source instanceof CollectionReference) {
-            $this->collection = $source;
-        } elseif ($source instanceof Entity) {
-            $source = $source->document();
-        }
-
-        if ($source instanceof DocumentReference) {
-            $this->collection = $source->collection(static::NAME);
-        }
-
-        if (! isset($this->collection)) {
-            throw new InvalidArgumentException('Invalid source supplied.');
-        }
+        $this->collection = $collection ?? service('firebase')->firestore->database()->collection(static::NAME);
 
         $this->setValidation($validation ?? service('validation', null, false));
         $this->initialize();

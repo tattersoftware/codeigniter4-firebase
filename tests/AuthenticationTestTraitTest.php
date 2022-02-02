@@ -61,6 +61,13 @@ final class AuthenticationTestTraitTest extends TestCase
         $this->auth->getUser($user->uid);
     }
 
+    public function testRemoveUserIgnoresNonexistent()
+    {
+        $this->removeFirebaseUser('whatchamacallit');
+
+        $this->assertSame([], $this->firebaseUserCache);
+    }
+
     public function testClearUsers()
     {
         $user = $this->createFirebaseUser();

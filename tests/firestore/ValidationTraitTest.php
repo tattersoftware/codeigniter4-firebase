@@ -8,6 +8,13 @@ use Tests\Support\FirestoreTestCase;
  */
 final class ValidationTraitTest extends FirestoreTestCase
 {
+    private array $rules = [
+        'name'   => 'required|string',
+        'taste'  => 'permit_empty|string',
+        'weight' => 'is_natural_no_zero',
+        'zero'   => 'numeric|in_list[0]',
+    ];
+
     public function testValidateArray()
     {
         $fruit    = $this->collection->fake(['name' => '']);
@@ -61,5 +68,38 @@ final class ValidationTraitTest extends FirestoreTestCase
         $this->expectExceptionMessage('You must define the "allowedFields" to use field protection');
 
         $this->collection->add($fruit->toArray());
+    }
+
+    public function testNotCleansRules()
+    {
+        $method = $this->getPrivateMethodInvoker($this->collection, 'cleanValidationRules');
+
+        $result = $method($this->rules, []);
+
+        $this->assertSame([], $result);
+    }
+
+    public function testGetValidationRulesExcept()
+    {
+        $expected = [
+            'taste'  => 'permit_empty|string',
+            'weight' => 'is_natural_no_zero',
+            'zero'   => 'numeric|in_list[0]',
+        ];
+
+        $result = $this->collection->getValidationRules(['except' => ['name']]);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testGetValidationRulesOnly()
+    {
+        $expected = [
+            'name' => 'required|string',
+        ];
+
+        $result = $this->collection->getValidationRules(['only' => ['name']]);
+
+        $this->assertSame($expected, $result);
     }
 }

@@ -14,14 +14,6 @@ use Tests\Support\FirestoreTestCase;
  */
 final class CollectionTest extends FirestoreTestCase
 {
-    public function testContructorThrows()
-    {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Invalid source supplied');
-
-        new FruitCollection('fruits'); // @phpstan-ignore-line
-    }
-
     public function testConstructorUsesCollection()
     {
         $fruits = firestore()->collection('fruits');
@@ -63,7 +55,7 @@ final class CollectionTest extends FirestoreTestCase
     {
         // Create a new collection as a subcollection
         $fruit      = $this->collection->make();
-        $collection = new FruitCollection($fruit);
+        $collection = new FruitCollection($fruit->document()->collection('fruit2'));
 
         $result = $collection->parent();
 
