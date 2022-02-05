@@ -1,11 +1,11 @@
 <?php
 
-use CodeIgniter\Test\CIUnitTestCase;
+use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-final class CallerTest extends CIUnitTestCase
+final class CallerTest extends TestCase
 {
     public function testGetErrors()
     {

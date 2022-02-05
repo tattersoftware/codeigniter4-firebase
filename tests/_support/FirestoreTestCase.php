@@ -2,65 +2,39 @@
 
 namespace Tests\Support;
 
-use CodeIgniter\Test\CIUnitTestCase;
-use CodeIgniter\Test\Fabricator;
-use Tatter\Firebase\Test\FirestoreTrait;
-use Tests\Support\Models\ColorModel;
-use Tests\Support\Models\ProfileModel;
+use Google\Cloud\Firestore\FirestoreClient;
+use Tatter\Firebase\Test\FirestoreTestTrait;
+use Tests\Support\Collections\FruitCollection;
 
 /**
  * @internal
  */
-abstract class FirestoreTestCase extends CIUnitTestCase
+abstract class FirestoreTestCase extends TestCase
 {
-    use FirestoreTrait;
+    use FirestoreTestTrait;
 
     /**
-     * UID of the Profile with a subcollection.
-     *
-     * @var string
+     * @var FirestoreClient
      */
-    protected $profileUid;
+    protected $firestore;
 
     /**
-     * Methods to run during setUp.
-     *
-     * @var array of methods
+     * @var FruitCollection
      */
-    protected $setUpMethods = [
-        'mockEmail',
-        'mockSession',
-        'clearFirestore',
-        'seedDatabase',
-    ];
+    protected $collection;
 
-    /**
-     * Create some fake entries.
-     */
-    protected function seedDatabase()
+    protected function setUp(): void
     {
-        $firestore  = service('firebase')->firestore->database();
-        $fabricator = new Fabricator(ColorModel::class);
+        parent::setUp();
 
-        // Remove any orphaned subcollections
-        foreach ($firestore->collectionGroup('colors')->documents() as $document) {
-            $document->reference()->delete();
-        }
+        $this->collection = new FruitCollection();
+        $this->firestore  = firestore();
+    }
 
-        // Fake some profiles
-        fake(ProfileModel::class);
-        fake(ProfileModel::class);
-        $profile          = fake(ProfileModel::class);
-        $this->profileUid = $profile->uid;
+    protected function tearDown(): void
+    {
+        parent::tearDown();
 
-        // Add some Colors as a subcollection
-        $collection = $firestore->collection('profiles')->document($profile->uid)->collection('colors');
-        $collection->add((array) $fabricator->make());
-        $collection->add((array) $fabricator->make());
-
-        // Make a second subcollection for grouped testing
-        $profile    = fake(ProfileModel::class);
-        $collection = $firestore->collection('profiles')->document($profile->uid)->collection('colors');
-        $collection->add((array) $fabricator->make());
+        $this->clearFirestore();
     }
 }

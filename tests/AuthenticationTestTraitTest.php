@@ -1,37 +1,37 @@
 <?php
 
-use CodeIgniter\Test\CIUnitTestCase;
 use Kreait\Firebase\Auth;
 use Kreait\Firebase\Auth\UserRecord;
 use Kreait\Firebase\Exception\Auth\UserNotFound;
-use Tatter\Firebase\Test\FirebaseUserTrait;
+use Tatter\Firebase\Test\AuthenticationTestTrait;
+use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-final class FirebaseUserTraitTest extends CIUnitTestCase
+final class AuthenticationTestTraitTest extends TestCase
 {
-    use FirebaseUserTrait;
+    use AuthenticationTestTrait;
 
     /**
      * Instance of the Firebase SDK.
      *
      * @var Auth
      */
-    protected $firebase;
+    protected $auth;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->firebase = service('firebase')->auth;
+        $this->auth = service('firebase')->auth;
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
 
-        $this->firebaseUserTearDown();
+        $this->clearFirebaseUsers();
     }
 
     public function testCreateUserReturnsUserRecord()
@@ -45,7 +45,7 @@ final class FirebaseUserTraitTest extends CIUnitTestCase
     {
         $user = $this->createFirebaseUser();
 
-        $test = $this->firebase->getUser($user->uid);
+        $test = $this->auth->getUser($user->uid);
 
         $this->assertInstanceOf(UserRecord::class, $test);
         $this->assertSame($user->email, $test->email);
@@ -58,16 +58,23 @@ final class FirebaseUserTraitTest extends CIUnitTestCase
 
         $this->expectException(UserNotFound::class);
 
-        $this->firebase->getUser($user->uid);
+        $this->auth->getUser($user->uid);
     }
 
-    public function testTearDownRemovesUser()
+    public function testRemoveUserIgnoresNonexistent()
+    {
+        $this->removeFirebaseUser('whatchamacallit');
+
+        $this->assertSame([], $this->firebaseUserCache);
+    }
+
+    public function testClearUsers()
     {
         $user = $this->createFirebaseUser();
-        $this->firebaseUserTearDown();
+        $this->clearFirebaseUsers();
 
         $this->expectException(UserNotFound::class);
 
-        $this->firebase->getUser($user->uid);
+        $this->auth->getUser($user->uid);
     }
 }
