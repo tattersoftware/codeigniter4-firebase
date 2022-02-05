@@ -24,8 +24,8 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "google/cloud-firestore": "^1.10",
-        "google/protobuf": "^3.3.0",
-        "grpc/grpc": "^1.1.0",
+        "google/protobuf": "^3.3",
+        "grpc/grpc": "^1.1",
         "kreait/firebase-php": "^5.0 || ^6.0"
     },
     "require-dev": {
