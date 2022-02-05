@@ -8,7 +8,7 @@ use DateTime;
 use Google\Cloud\Core\Timestamp;
 use Google\Cloud\Firestore\DocumentReference;
 
-abstract class Entity extends FrameworkEntity
+class Entity extends FrameworkEntity
 {
     protected $dates = [
         'createdAt',

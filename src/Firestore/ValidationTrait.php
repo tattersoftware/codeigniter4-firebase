@@ -64,6 +64,76 @@ trait ValidationTrait
     }
 
     /**
+     * Set the value of the skipValidation flag.
+     *
+     * @param bool $skip Value
+     *
+     * @return $this
+     */
+    public function skipValidation(bool $skip = true): self
+    {
+        $this->skipValidation = $skip;
+
+        return $this;
+    }
+
+    /**
+     * Returns the model's defined validation rules so that they
+     * can be used elsewhere, if needed.
+     *
+     * @param array $options Options
+     */
+    public function getValidationRules(array $options = []): array
+    {
+        $rules = $this->validationRules;
+
+        if (isset($options['except'])) {
+            $rules = array_diff_key($rules, array_flip($options['except']));
+        } elseif (isset($options['only'])) {
+            $rules = array_intersect_key($rules, array_flip($options['only']));
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Validates the data against the validation rules/group.
+     *
+     * @param array<string, mixed> $data
+     */
+    public function validate(array $data, bool $cleanValidationRules = true): bool
+    {
+        $rules = $this->getValidationRules();
+
+        if ($this->skipValidation || $rules === [] || $data === []) {
+            return true;
+        }
+
+        $rules = $cleanValidationRules ? $this->cleanValidationRules($rules, $data) : $rules;
+
+        // If no data existed that needs validation our job is done here.
+        if ($rules === []) {
+            return true;
+        }
+
+        return $this->validation->setRules($rules, $this->validationMessages)->run($data, null);
+    }
+
+    /**
+     * Returns any validation errors that occurred.
+     *
+     * @return array<string,string> [field => message]
+     */
+    public function getErrors(): array
+    {
+        if ($this->skipValidation) {
+            return [];
+        }
+
+        return $this->validation->getErrors();
+    }
+
+    /**
      * Ensures that only the fields that are allowed to be updated
      * are in the data array.
      * Used by add() and change() to protect against mass assignment
@@ -93,62 +163,6 @@ trait ValidationTrait
     }
 
     /**
-     * Set the value of the skipValidation flag.
-     *
-     * @param bool $skip Value
-     *
-     * @return $this
-     */
-    public function skipValidation(bool $skip = true)
-    {
-        $this->skipValidation = $skip;
-
-        return $this;
-    }
-
-    /**
-     * Validates the data against the validation rules/group.
-     *
-     * @param array<string, mixed> $data
-     */
-    public function validate(array $data, bool $cleanValidationRules = true): bool
-    {
-        $rules = $this->getValidationRules();
-
-        if ($this->skipValidation || $rules === [] || $data === []) {
-            return true;
-        }
-
-        $rules = $cleanValidationRules ? $this->cleanValidationRules($rules, $data) : $rules;
-
-        // If no data existed that needs validation our job is done here.
-        if ($rules === []) {
-            return true;
-        }
-
-        return $this->validation->setRules($rules, $this->validationMessages)->run($data, null);
-    }
-
-    /**
-     * Returns the model's defined validation rules so that they
-     * can be used elsewhere, if needed.
-     *
-     * @param array $options Options
-     */
-    public function getValidationRules(array $options = []): array
-    {
-        $rules = $this->validationRules;
-
-        if (isset($options['except'])) {
-            $rules = array_diff_key($rules, array_flip($options['except']));
-        } elseif (isset($options['only'])) {
-            $rules = array_intersect_key($rules, array_flip($options['only']));
-        }
-
-        return $rules;
-    }
-
-    /**
      * Removes any rules that apply to fields that have not been set
      * currently so that rules don't block updating when only updating
      * a partial row.
@@ -169,19 +183,5 @@ trait ValidationTrait
         }
 
         return $rules;
-    }
-
-    /**
-     * Returns any validation errors that occurred.
-     *
-     * @return array<string,string> [field => message]
-     */
-    public function getErrors(): array
-    {
-        if ($this->skipValidation) {
-            return [];
-        }
-
-        return $this->validation->getErrors();
     }
 }
