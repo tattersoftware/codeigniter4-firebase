@@ -11,24 +11,18 @@ class Caller
 {
     /**
      * UID of the user to make the request.
-     *
-     * @var string
      */
-    protected $uid;
+    protected string $uid = '';
 
     /**
      * A Firebase ID token for the user identified by $this->uid.
-     *
-     * @var string|null
      */
-    protected $token;
+    protected ?string $token = null;
 
     /**
      * Error messages from the last call
-     *
-     * @var array
      */
-    protected $errors = [];
+    protected array $errors = [];
 
     /**
      * Get and clear any error messsages

@@ -21,17 +21,13 @@ class Firebase
 
     /**
      * A pre-authenticated instance of the factory
-     *
-     * @var Factory
      */
-    protected $factory;
+    protected ?Factory $factory = null;
 
     /**
      * Cache for instances that have already been loaded.
-     *
-     * @var array
      */
-    protected $instances = [];
+    protected array $instances = [];
 
     /**
      * Stores the path to the optional service account credentials file.
@@ -54,13 +50,7 @@ class Firebase
         }
 
         // If credentials were specified then use them
-        if ($this->serviceAccount) {
-            $this->factory = (new Factory())->withServiceAccount($this->serviceAccount);
-        }
-        // Create a new instance
-        else {
-            $this->factory = new Factory();
-        }
+        $this->factory = $this->serviceAccount ? (new Factory())->withServiceAccount($this->serviceAccount) : new Factory();
 
         return $this->factory;
     }

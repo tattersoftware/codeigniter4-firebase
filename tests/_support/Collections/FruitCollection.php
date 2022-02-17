@@ -10,19 +10,19 @@ final class FruitCollection extends Collection
     public const NAME   = 'fruits';
     public const ENTITY = Fruit::class;
 
-    protected $allowedFields = [
+    protected array $allowedFields = [
         'name',
         'taste',
         'weight',
         'zero',
     ];
-    protected $validationRules = [
+    protected array $validationRules = [
         'name'   => 'required|string',
         'taste'  => 'permit_empty|string',
         'weight' => 'is_natural_no_zero',
         'zero'   => 'numeric|in_list[0]',
     ];
-    protected $validationMessages = [
+    protected array $validationMessages = [
         'zero' => 'The zero field should be supplied by attributes.',
     ];
 

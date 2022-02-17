@@ -62,40 +62,30 @@ abstract class Collection
 
     /**
      * The table's primary key.
-     *
-     * @var string
      */
-    protected $primaryKey = 'uid';
+    protected string $primaryKey = 'uid';
 
     /**
      * An array of field names that are allowed
      * to be set by the user in inserts/updates.
-     *
-     * @var array
      */
-    protected $allowedFields = [];
+    protected array $allowedFields = [];
 
     /**
      * If true, will set createdField, and updatedField
      * values on created Entities.
-     *
-     * @var bool
      */
-    protected $useTimestamps = true;
+    protected bool $useTimestamps = true;
 
     /**
      * The column used for insert timestamps.
-     *
-     * @var string|null
      */
-    protected $createdField = 'createdAt';
+    protected ?string $createdField = 'createdAt';
 
     /**
      * The column used for update timestamps.
-     *
-     * @var string|null
      */
-    protected $updatedField = 'updatedAt';
+    protected ?string $updatedField = 'updatedAt';
 
     final public function __construct(?CollectionReference $collection = null, ?ValidationInterface $validation = null)
     {

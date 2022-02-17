@@ -18,7 +18,7 @@ trait AuthenticationTestTrait
      *
      * @var string[]
      */
-    protected $firebaseUserCache = [];
+    protected array $firebaseUserCache = [];
 
     /**
      * Creates a random Firebase UserRecord.

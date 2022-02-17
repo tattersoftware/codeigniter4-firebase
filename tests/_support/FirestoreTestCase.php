@@ -13,15 +13,8 @@ abstract class FirestoreTestCase extends TestCase
 {
     use FirestoreTestTrait;
 
-    /**
-     * @var FirestoreClient
-     */
-    protected $firestore;
-
-    /**
-     * @var FruitCollection
-     */
-    protected $collection;
+    protected FirestoreClient $firestore;
+    protected FruitCollection $collection;
 
     protected function setUp(): void
     {
