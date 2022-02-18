@@ -75,5 +75,16 @@ trait FirestoreTestTrait
             }
             $documents = $collection->limit(30)->documents();
         }
+
+        // Repeat for any lingering deleted documents (not pagination safe)
+        $documents = $collection->listDocuments();
+
+        foreach ($documents as $document) {
+            foreach ($document->collections() as $subcollection) {
+                $this->deleteCollection($subcollection, $firestore);
+            }
+
+            $document->delete();
+        }
     }
 }

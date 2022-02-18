@@ -15,10 +15,8 @@ final class AuthenticationTestTraitTest extends TestCase
 
     /**
      * Instance of the Firebase SDK.
-     *
-     * @var Auth
      */
-    protected $auth;
+    protected Auth $auth;
 
     protected function setUp(): void
     {

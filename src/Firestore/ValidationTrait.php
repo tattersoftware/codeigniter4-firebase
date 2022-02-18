@@ -17,17 +17,13 @@ trait ValidationTrait
     /**
      * Whether we should limit fields in inserts
      * and updates to those available in $allowedFields or not.
-     *
-     * @var bool
      */
-    protected $protectFields = true;
+    protected bool $protectFields = true;
 
     /**
      * Our validator instance.
-     *
-     * @var ValidationInterface
      */
-    protected $validation;
+    protected ValidationInterface $validation;
 
     /**
      * Rules used to validate data in add and update methods.
@@ -35,7 +31,7 @@ trait ValidationTrait
      *
      * @var array<string,string>
      */
-    protected $validationRules = [];
+    protected array $validationRules = [];
 
     /**
      * Contains any custom error messages to be
@@ -43,15 +39,13 @@ trait ValidationTrait
      *
      * @var array<string,string>
      */
-    protected $validationMessages = [];
+    protected array $validationMessages = [];
 
     /**
      * Skip the model's validation. Used in conjunction with skipValidation()
      * to skip data validation for any future calls.
-     *
-     * @var bool
      */
-    protected $skipValidation = false;
+    protected bool $skipValidation = false;
 
     /**
      * @return $this

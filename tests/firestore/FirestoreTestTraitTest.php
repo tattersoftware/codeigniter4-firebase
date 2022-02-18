@@ -13,7 +13,7 @@ final class FirestoreTestTraitTest extends FirestoreTestCase
         $collections = firestore()->collections();
         $this->assertCount(1, $collections);
 
-        $this->deleteCollection('fruits');
+        $this->deleteCollection($this->collection::NAME);
         $collections = firestore()->collections();
         $this->assertCount(0, $collections);
     }
