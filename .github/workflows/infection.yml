@@ -45,7 +45,7 @@ jobs:
         continue-on-error: true
 
       - name: Set Up Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: '16'
 
