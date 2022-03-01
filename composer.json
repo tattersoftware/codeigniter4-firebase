@@ -29,8 +29,8 @@
         "kreait/firebase-php": "^5.0 || ^6.0"
     },
     "require-dev": {
-        "codeigniter4/devkit": "^1.0",
-        "codeigniter4/framework": "^4.1.0"
+        "codeigniter4/framework": "^4.1.0",
+        "tatter/tools": "^2.0"
     },
     "config": {
         "allow-plugins": {
