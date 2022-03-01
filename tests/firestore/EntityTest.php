@@ -44,4 +44,15 @@ final class EntityTest extends FirestoreTestCase
         $this->assertInstanceOf(Time::class, $result);
         $this->assertSame($time->getYear(), $result->getYear());
     }
+
+    public function testMutateDateSupportsNull()
+    {
+        $fruit = $this->collection->fake([
+            'createdAt' => null,
+        ]);
+
+        $result = $fruit->createdAt;
+
+        $this->assertNull($result);
+    }
 }

@@ -50,9 +50,9 @@ class Entity extends FrameworkEntity
      * Converts the given item into a Time object.
      * Adds support for Google's Timestamp
      *
-     * @param DateTime|int|string|Time|Timestamp $value
+     * @param DateTime|int|string|Time|Timestamp|null $value
      */
-    protected function mutateDate($value): Time
+    protected function mutateDate($value): ?Time
     {
         if ($value instanceof Timestamp) {
             // Convert to an int timestamp
