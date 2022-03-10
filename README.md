@@ -256,3 +256,4 @@ This library also comes with its own Firestore `Entity` that handles Google's ti
 conversions and these methods to access metadata about the underlying Firestore document:
 * `document(?DocumentReference $document = null): ?DocumentReference` *Gets or sets the document*
 * `id(): string`
+* `super(): ?DocumentReference` *Gets an Entity's parent Entity, if it is from a subcollection*

@@ -2,6 +2,8 @@
 
 use CodeIgniter\I18n\Time;
 use Google\Cloud\Core\Timestamp;
+use Google\Cloud\Firestore\DocumentReference;
+use Tests\Support\Collections\FruitCollection;
 use Tests\Support\FirestoreTestCase;
 
 /**
@@ -54,5 +56,34 @@ final class EntityTest extends FirestoreTestCase
         $result = $fruit->createdAt;
 
         $this->assertNull($result);
+    }
+
+    public function testSuperRequiresDocument()
+    {
+        $fruit = $this->collection->fake();
+
+        $this->expectException('UnexpectedValueException');
+        $this->expectExceptionMessage('Entity must exist before accessing parent.');
+
+        $this->assertNull($fruit->super());
+    }
+
+    public function testSuperIsNull()
+    {
+        $fruit = $this->collection->make();
+
+        $this->assertNull($fruit->super());
+    }
+
+    public function testSuperReturnsCollectionDocumentParent()
+    {
+        $fruit = $this->collection->make();
+        $foods = collection(FruitCollection::class, $fruit);
+        $food  = $foods->add(['name' => 'food']);
+
+        $result = $food->super();
+
+        $this->assertInstanceOf(DocumentReference::class, $result);
+        $this->assertSame($fruit->id(), $result->id());
     }
 }

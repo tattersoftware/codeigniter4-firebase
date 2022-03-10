@@ -7,6 +7,7 @@ use CodeIgniter\I18n\Time;
 use DateTime;
 use Google\Cloud\Core\Timestamp;
 use Google\Cloud\Firestore\DocumentReference;
+use UnexpectedValueException;
 
 class Entity extends FrameworkEntity
 {
@@ -44,6 +45,20 @@ class Entity extends FrameworkEntity
         }
 
         return $this->document;
+    }
+
+    /**
+     * Returns the next higher DocumentReference for nested objects,
+     * or null if not part of a subcollection.
+     */
+    public function super(): ?DocumentReference
+    {
+        if (null === $reference = $this->document()) {
+            throw new UnexpectedValueException('Entity must exist before accessing parent.');
+        }
+
+        // The parent is the subcollection, its parent (if it exists) is a document
+        return $reference->parent()->parent();
     }
 
     /**
