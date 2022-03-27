@@ -30,6 +30,15 @@ final class CollectionTest extends FirestoreTestCase
         $this->assertSame($this->collection->id(), $result->id());
     }
 
+    public function testDocument()
+    {
+        $result = $this->collection->document('banana');
+
+        $this->assertInstanceOf(DocumentReference::class, $result);
+        $this->assertSame('banana', $result->id());
+        $this->assertSame('fruits/banana', $result->path());
+    }
+
     public function testId()
     {
         $result = $this->collection->id();

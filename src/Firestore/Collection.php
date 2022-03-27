@@ -126,6 +126,15 @@ abstract class Collection
     }
 
     /**
+     * Returns a DocumentReference to the given ID within
+     * the underlying collection (need not exist).
+     */
+    final public function document(string $id): DocumentReference
+    {
+        return $this->collection->document($id);
+    }
+
+    /**
      * Returns the parent DocumentReference for a subcollection,
      * or null if root.
      */
