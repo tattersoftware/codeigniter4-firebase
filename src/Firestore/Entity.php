@@ -7,6 +7,7 @@ use CodeIgniter\I18n\Time;
 use DateTime;
 use Google\Cloud\Core\Timestamp;
 use Google\Cloud\Firestore\DocumentReference;
+use Google\Cloud\Firestore\FieldValue\ServerTimestampValue;
 use UnexpectedValueException;
 
 class Entity extends FrameworkEntity
@@ -72,6 +73,12 @@ class Entity extends FrameworkEntity
         if ($value instanceof Timestamp) {
             // Convert to an int timestamp
             $value = $value->formatForApi()['seconds'];
+        }
+
+        // If the document has not been created then a ServerTimestampValue
+        // may exist to indicated "current timestamp" which should be ignored.
+        if ($value instanceof ServerTimestampValue) {
+            return null;
         }
 
         return parent::mutateDate($value);

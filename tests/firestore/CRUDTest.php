@@ -1,5 +1,6 @@
 <?php
 
+use Google\Cloud\Core\Timestamp;
 use Tatter\Firebase\Firestore\Entity;
 use Tests\Support\Entities\Fruit;
 use Tests\Support\FirestoreTestCase;
@@ -63,6 +64,21 @@ final class CRUDTest extends FirestoreTestCase
         $this->expectExceptionMessage('Tests\Support\Entities\Fruit failed validation: The name field is required');
 
         $this->collection->add($fruit);
+    }
+
+    public function testAddSetsTimestampFields()
+    {
+        $data = [
+            'name'   => 'banana',
+            'taste'  => 'sweet',
+            'weight' => 20,
+        ];
+
+        $result = $this->collection->add($data);
+
+        $snapshot = $this->firestore->collection('fruits')->document($result->id())->snapshot();
+        $this->assertInstanceOf(Timestamp::class, $snapshot->data()['createdAt']);
+        $this->assertInstanceOf(Timestamp::class, $snapshot->data()['updatedAt']);
     }
 
     public function testGetReference()
@@ -162,6 +178,16 @@ final class CRUDTest extends FirestoreTestCase
         $this->expectExceptionMessage('Entity must exist before updating');
 
         $this->collection->update($fruit, ['name' => 'foo']);
+    }
+
+    public function testUpdateSetsUpdatedField()
+    {
+        $fruit = $this->collection->make();
+
+        $result = $this->collection->update($fruit, ['name' => 'banana']);
+
+        $snapshot = $this->firestore->collection('fruits')->document($result->id())->snapshot();
+        $this->assertInstanceOf(Timestamp::class, $snapshot->data()['updatedAt']);
     }
 
     public function testList()

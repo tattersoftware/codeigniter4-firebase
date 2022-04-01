@@ -8,6 +8,7 @@ use CodeIgniter\Validation\ValidationInterface;
 use Google\Cloud\Firestore\CollectionReference;
 use Google\Cloud\Firestore\DocumentReference;
 use Google\Cloud\Firestore\DocumentSnapshot;
+use Google\Cloud\Firestore\FieldValue;
 use Google\Cloud\Firestore\Query;
 use InvalidArgumentException;
 use Traversable;
@@ -184,8 +185,17 @@ abstract class Collection
         if (! $this->validate($entity->toArray())) {
             throw new UnexpectedValueException(static::ENTITY . ' failed validation: ' . implode(' ', $this->getErrors()));
         }
-
         $data = $this->protectFields($entity->toArray());
+
+        // Add created and updated fields as necessary
+        if ($this->useTimestamps) {
+            if ($this->createdField !== null) {
+                $data[$this->createdField] ??= FieldValue::serverTimestamp();
+            }
+            if ($this->updatedField !== null) {
+                $data[$this->updatedField] ??= FieldValue::serverTimestamp();
+            }
+        }
 
         // If a primary key was supplied use set()
         if (isset($data[$this->primaryKey])) {
@@ -222,6 +232,11 @@ abstract class Collection
 
         if (null === $reference = $entity->document()) {
             throw new UnexpectedValueException('Entity must exist before updating.');
+        }
+
+        // Add updated field as necessary
+        if ($this->updatedField !== null) {
+            $data[$this->updatedField] ??= FieldValue::serverTimestamp();
         }
 
         $paths = [];
@@ -302,11 +317,14 @@ abstract class Collection
     {
         $data = $snapshot->data();
 
-        if ($this->useTimestamps) {
-            $data[$this->createdField] = $snapshot->createTime();
-            $data[$this->updatedField] = $snapshot->updateTime();
-        }
         $data[$this->primaryKey] = $snapshot->id();
+
+        if ($this->createdField !== null) {
+            $data[$this->createdField] ??= $snapshot->createTime();
+        }
+        if ($this->updatedField !== null) {
+            $data[$this->updatedField] ??= $snapshot->updateTime();
+        }
 
         // Create the entity before validation to get defaults and casts
         $class  = static::ENTITY;
