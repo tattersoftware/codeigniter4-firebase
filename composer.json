@@ -1,7 +1,8 @@
 {
     "name": "tatter/firebase",
-    "type": "library",
     "description": "Firebase integration for CodeIgniter 4",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "codeigniter",
         "codeigniter4",
@@ -11,8 +12,6 @@
         "google",
         "cloud"
     ],
-    "homepage": "https://github.com/tattersoftware/codeigniter4-firebase",
-    "license": "MIT",
     "authors": [
         {
             "name": "Matthew Gatner",
@@ -21,6 +20,7 @@
             "role": "Developer"
         }
     ],
+    "homepage": "https://github.com/tattersoftware/codeigniter4-firebase",
     "require": {
         "php": "^7.4 || ^8.0",
         "google/cloud-firestore": "^1.10",
@@ -32,12 +32,8 @@
         "codeigniter4/framework": "^4.1.0",
         "tatter/tools": "^2.0"
     },
-    "config": {
-        "allow-plugins": {
-            "ergebnis/composer-normalize": true,
-            "phpstan/extension-installer": true
-        }
-    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Tatter\\Firebase\\": "src"
@@ -51,17 +47,25 @@
             "Tests\\Support\\": "tests/_support"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true
+        }
+    },
     "scripts": {
-        "analyze": "phpstan analyze",
+        "analyze": [
+            "phpstan analyze",
+            "psalm",
+            "rector process --dry-run"
+        ],
         "ci": [
             "Composer\\Config::disableProcessTimeout",
             "@deduplicate",
             "@analyze",
+            "@composer normalize --dry-run",
             "@test",
             "@inspect",
-            "rector process",
             "@style"
         ],
         "deduplicate": "phpcpd app/ src/",
