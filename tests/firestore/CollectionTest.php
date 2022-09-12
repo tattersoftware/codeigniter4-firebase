@@ -74,8 +74,10 @@ final class CollectionTest extends FirestoreTestCase
 
     public function testParentNull()
     {
-        $result = $this->collection->parent();
+        $this->markTestSkipped('https://github.com/googleapis/google-cloud-php/pull/5492');
 
+        // @phpstan-ignore-next-line
+        $result = $this->collection->parent();
         $this->assertNull($result);
     }
 
@@ -95,7 +97,7 @@ final class CollectionTest extends FirestoreTestCase
 
     public function testFakeReturnsEntity()
     {
-        $collection             = new class () extends Collection {
+        $collection = new class () extends Collection {
             public const NAME   = 'fruits';
             public const ENTITY = Fruit::class;
         };

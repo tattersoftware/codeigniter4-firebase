@@ -72,6 +72,9 @@ final class EntityTest extends FirestoreTestCase
     {
         $fruit = $this->collection->make();
 
+        $this->markTestSkipped('https://github.com/googleapis/google-cloud-php/pull/5492');
+
+        // @phpstan-ignore-next-line
         $this->assertNull($fruit->super());
     }
 
